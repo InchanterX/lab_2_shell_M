@@ -1,0 +1,12 @@
+[project]
+name = "Python_Lab_Shell_Medium"
+version = "1.0.1"
+description = "Small shell on Python with an ability to use basic file managing commands and a bit more."
+requires-python = ">=3.12.2"
+dependencies = [
+    "pytest>=8.4.2",
+]
+
+[tool.mypy]
+python_version = "3.12.2"
+ignore_missing_imports = true
