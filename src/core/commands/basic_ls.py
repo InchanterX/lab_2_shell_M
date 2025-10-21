@@ -12,9 +12,10 @@ class ls:
     def ls(self) -> None:
         pass
 
-    COMMAND_INFO = {
-        "name": "ls",
-        "flags": ["-l"],
-        "description": "List files in the given folder.",
-        "function": ls
-    }
+
+COMMAND_INFO = {
+    "name": "ls",
+    "flags": ["-l"],
+    "description": "List files in the given folder.",
+    "function": ls
+}
