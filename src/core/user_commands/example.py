@@ -15,7 +15,7 @@ class Example:
 
 COMMAND_INFO = {
     "name": "example",
-    "flags": ["-l", "-a"],
+    "flags": ["l", "a"],
     "description": "Do nothing.",
     "function": Example
 }

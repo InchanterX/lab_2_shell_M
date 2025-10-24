@@ -15,7 +15,7 @@ class ls:
 
 COMMAND_INFO = {
     "name": "ls",
-    "flags": ["-l"],
+    "flags": ["l", "all", "help"],
     "description": "List files in the given folder.",
     "function": ls
 }
