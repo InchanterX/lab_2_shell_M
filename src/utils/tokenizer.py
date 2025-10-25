@@ -17,6 +17,19 @@ class Tokenizer:
         pass
 
     def tokenize(self, command: str) -> list[Command_Token]:
-        tokens = []
+        tokens: list[Command_Token] = []
+        order = 0
         for element in MASTER_RE.finditer(command):
-            print(element)
+            kind = element.lastgroup
+            content = element.group()
+            position = order
+            if kind == "SPACE":
+                pass
+            elif kind == "UNKNOWN":
+                raise SyntaxError(
+                    f"Невалидное значение {content!r} на позиции {order}!"
+                )
+            else:
+                tokens.append(Command_Token(kind, content, position))
+                order += 1
+        return tokens

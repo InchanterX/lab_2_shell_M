@@ -1,6 +1,6 @@
 import os
 import re
-import pprint
+# import pprint
 from src.utils.registry import Registry
 
 USER_HOME_DIR = os.path.expanduser("~")
@@ -10,7 +10,7 @@ REGISTRY = Registry().registration()
 NAMES = list(REGISTRY.keys())
 FLAGS = set(flag for name in NAMES for flag in REGISTRY[name]["flags"])
 
-pprint.pprint(REGISTRY)
+# pprint.pprint(REGISTRY)
 
 # Regular expression for spaces
 PURE_SPACE_RE = r"(\s+)"
@@ -59,39 +59,3 @@ MASTER_RE = re.compile('|'.join(ALL_EXPRESSIONS))
 #     rf"(?:(?:{LONG_FLAGS_RE}|{SHORT_FLAGS_RE}|{QUOTED_PARAMETERS_RE}|{UNQUOTED_PARAMETERS_RE}|{UNKNOWN3_RE})"
 #     rf"(?:{SPACE_RE}+|{UNKNOWN4_RE}))+$"
 # )
-
-
-def tokenize_with_your_code(command_line):
-    """Токенизация строки с помощью вашего кода"""
-    tokens = []
-    for match in MASTER_RE.finditer(command_line):
-        group_dict = match.groupdict()
-        for token_type, value in group_dict.items():
-            if value is not None:
-                tokens.append((token_type, value))
-    return tokens
-
-
-# Тестовые строки
-test_commands = [
-    "ls 'D:\My folder\файлы' -la --help",
-    "ls '/dir/another one/gol' -la --help",
-    "ls D:\My_folder\файлы -la --help",
-    "ls D:\My folder\файлы -la --help",
-    "cd D:\My folder\файлы -la --help",
-    "example D:\My_folder\файлы -lak --help",
-    "grep '^\"d2' file_name.py",
-    "ls 'abc fd -ls"
-]
-
-print("Токенизация с помощью вашего кода:\n")
-
-for i, cmd in enumerate(test_commands, 1):
-    print(f"Строка {i}: {cmd}")
-    print("Результат токенизации:")
-
-    tokens = tokenize_with_your_code(cmd)
-    for token_type, value in tokens:
-        print(f"  {token_type}: {repr(value)}")
-
-    print("\n" + "="*50 + "\n")
