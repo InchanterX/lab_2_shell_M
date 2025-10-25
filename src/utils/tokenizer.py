@@ -1,10 +1,14 @@
 from typing import Any
-# import src.utils.constants
+from dataclasses import dataclass
+from src.utils.constants import MASTER_RE
+import re
 
 
+@dataclass
 class Command_Token:
     type: str
     value: Any
+    pos: int
 
 
 class Tokenizer:
@@ -13,7 +17,6 @@ class Tokenizer:
         pass
 
     def tokenize(self, command: str) -> list[Command_Token]:
-        command = r"ls \d\repository\ -l"
-
-        tokens = command.split(" ")
-        print(tokens)
+        tokens = []
+        for element in MASTER_RE.finditer(command):
+            print(element)

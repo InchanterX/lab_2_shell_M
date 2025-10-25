@@ -42,7 +42,3 @@ class Registry:
             # print(f"Failed to register module {module_name} at {module_path}!")
 
         return commands
-
-
-# result = Registry().registration()
-# print(result)
