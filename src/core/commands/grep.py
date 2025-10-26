@@ -15,7 +15,9 @@ class grep:
 
 COMMAND_INFO = {
     "name": "grep",
-    "flags": ["l", "c", "help"],
-    "description": "Search.",
-    "function": grep
+    "function": grep,
+    "entry-point": "grep",
+    "flags": ["long", "help"],
+    "aliases": {},
+    "description": "Search."
 }

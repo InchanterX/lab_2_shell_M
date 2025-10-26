@@ -90,6 +90,18 @@ from src.utils.tokenizer import Tokenizer, Command_Token
         Command_Token(type="COMMAND", value="ls", pos=1),
         Command_Token(type="SHORT_FLAG", value="-l", pos=2),
     ]),
+
+    # several sort and long flags
+    ("ls -lll -l --all --all", [
+        Command_Token(type="COMMAND", value="ls", pos=0),
+        Command_Token(type="SHORT_FLAG", value="-lll", pos=1),
+        Command_Token(type="SHORT_FLAG", value="-l", pos=2),
+        Command_Token(type="LONG_FLAG", value="--all", pos=3),
+        Command_Token(type="LONG_FLAG", value="--all", pos=4),
+    ]),
+
+    # empty line
+    ("   ", []),
 ])
 def test_tokenizer_valid_commands(command, expected_output):
     assert Tokenizer().tokenize(command) == expected_output

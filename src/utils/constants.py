@@ -26,7 +26,7 @@ LONG_FLAGS = [flag for flag in FLAGS if len(flag) > 1]
 # PURE_SHORT_FLAGS_RE = f"-[{''.join(re.escape(short_flag) for short_flag in SHORT_FLAGS)}]+"
 PURE_SHORT_FLAGS_RE = f"-[a-zA-Z]+"
 # PURE_LONG_FLAGS_RE = f"--({'|'.join(re.escape(long_flag) for long_flag in LONG_FLAGS)})"
-PURE_LONG_FLAGS_RE = f"--[a-zA-Z]+"
+PURE_LONG_FLAGS_RE = f"--[a-zA-Z-]+"
 SHORT_FLAGS_RE = f"(?P<SHORT_FLAG>{PURE_SHORT_FLAGS_RE})"
 LONG_FLAGS_RE = f"(?P<LONG_FLAG>{PURE_LONG_FLAGS_RE})"
 

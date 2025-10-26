@@ -1,7 +1,6 @@
+from src.utils.constants import MASTER_RE
 from typing import Any
 from dataclasses import dataclass
-from src.utils.constants import MASTER_RE
-import re
 
 
 @dataclass
