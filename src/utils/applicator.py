@@ -1,11 +1,10 @@
-from src.utils.tokenizer import Tokenizer
+from src.utils.tokenizer import Command_Token
 from src.utils.constants import REGISTRY
 
 
 class Applicator:
 
-    def __init__(self) -> None:
-        tokens = Tokenizer().tokenize("ls -lll /dir/gol -h --all --long")
+    def __init__(self, tokens) -> None:
 
         # list of all command's commands
         self.commands = [
@@ -36,7 +35,7 @@ class Applicator:
         class_instance = class_name()
         self.class_call = getattr(class_instance, entry_point)
 
-    def application(self):
+    def application(self) -> str:
         # check if entered command is verily a command
         if (self.first_element.type != "COMMAND") or (len(self.commands) == 0):
             raise SyntaxError(f"{self.first_element} не является командой!")
@@ -44,7 +43,6 @@ class Applicator:
         # match aliases with full flags and make a unified list of them
         local_flags = REGISTRY[self.first_element.value]['flags']
         local_aliases = REGISTRY[self.first_element.value]['aliases']
-        print(local_flags)
         for short_flag in self.unique_short_flags:
             short_flag_alias = local_aliases.get(short_flag)
             if short_flag_alias == None:
@@ -61,5 +59,5 @@ class Applicator:
 # Entering wrong long flag
 
 
-result = Applicator().application()
-print(result)
+# result = Applicator().application()
+# print(result)

@@ -4,6 +4,8 @@ import re
 from src.utils.registry import Registry
 
 USER_HOME_DIR = os.path.expanduser("~")
+USER_LOGIN = os.getlogin()
+CURRENT_DIR = USER_HOME_DIR
 
 # Modules data
 REGISTRY = Registry().registration()

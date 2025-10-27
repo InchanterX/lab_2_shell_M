@@ -7,12 +7,11 @@ class Ls:
     '''
 
     def __init__(self) -> None:
-        pass
+        self.result
 
     def ls(self, long_flag: list[str], parameters: list[str]) -> str:
         if parameters == []:
             parameters.append["."]
-        return parameters
 
 
 COMMAND_INFO = {
