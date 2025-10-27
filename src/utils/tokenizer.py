@@ -1,4 +1,4 @@
-from src.utils.constants import MASTER_RE
+import src.utils.constants as constants
 from typing import Any
 from dataclasses import dataclass
 
@@ -18,7 +18,7 @@ class Tokenizer:
     def tokenize(self, command: str) -> list[Command_Token]:
         tokens: list[Command_Token] = []
         order = 0
-        for element in MASTER_RE.finditer(command):
+        for element in constants.MASTER_RE.finditer(command):
             kind = element.lastgroup
             content = element.group()
             position = order

@@ -17,44 +17,22 @@ class Cd:
             constants.CURRENT_DIR = constants.USER_HOME_DIR
 
         for parameter in parameters:
-            if parameter[0] == "~":
-                parameter = constants.USER_HOME_DIR + parameter[1:]
-                if os.path.isfile(parameter):
-                    raise SyntaxError("You can't switch to a file!")
-                elif os.path.isdir(parameter):
-                    constants.CURRENT_DIR = parameter
-                else:
-                    raise SyntaxError(f"Path {parameter} is invalid!")
-            if parameter[0:2] == "..":
-                if constants.CURRENT_DIR == "/":
-                    raise SyntaxError("You can't switch any higher!")
-                current_dir_copy = constants.CURRENT_DIR
-                while current_dir_copy[-1] != "/":
-                    current_dir_copy[:-1]
-                current_dir_copy[:-1]
-                if os.path.isdir(current_dir_copy+parameter[2:]):
-                    constants.CURRENT_DIR = current_dir_copy + \
-                        parameter[2:]
-                else:
-                    raise SyntaxError(
-                        f"Path {constants.CURRENT_DIR_copy+parameter[2:]} is invalid!")
-            elif parameter[0] == ".":
-                if os.path.isdir(constants.CURRENT_DIR+parameter[1:]):
-                    constants.CURRENT_DIR += parameter[1:]
-                else:
-                    raise SyntaxError(
-                        f"Path {constants.CURRENT_DIR+parameter[1:]} is invalid!"
-                    )
-            elif parameter[0] == "/":
-                if os.path.isdir(parameter):
-                    constants.CURRENT_DIR = parameter
-                else:
-                    raise SyntaxError(f"Path {parameter} is invalid!")
+            parameter = os.path.expanduser(parameter)
+
+            if not os.path.isabs(parameter):
+                parameter = os.path.join(constants.CURRENT_DIR, parameter)
+
+            parameter = os.path.normpath(parameter)
+
+            if os.path.isfile(parameter):
+                raise SyntaxError(
+                    f"You can't switch to {parameter}. It's a file!")
+            elif os.path.isdir(parameter):
+                print(parameter)
+                constants.CURRENT_DIR = parameter
             else:
-                if os.path.isdir(constants.CURRENT_DIR + "/" + parameter):
-                    constants.CURRENT_DIR = constants.CURRENT_DIR + "/" + parameter
-                else:
-                    raise SyntaxError(f"Path {parameter} is invalid!")
+                raise SyntaxError(f"Path {parameter} doesn't exist!")
+        return ""
 
 
 COMMAND_INFO = {

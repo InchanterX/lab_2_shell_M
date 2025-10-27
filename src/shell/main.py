@@ -1,4 +1,4 @@
-from src.utils.constants import USER_LOGIN, CURRENT_DIR
+import src.utils.constants as constants
 from src.shell.shell import Shell
 
 
@@ -6,7 +6,7 @@ def main() -> None:
     print("Console is loading...")
 
     while True:
-        command = input(f"{USER_LOGIN}|{CURRENT_DIR}>")
+        command = input(f"{constants.USER_LOGIN}|{constants.CURRENT_DIR}>")
 
         if command.lower() in ("exit", "quit"):
             print("Exiting the console.")

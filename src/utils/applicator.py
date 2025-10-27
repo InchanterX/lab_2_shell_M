@@ -1,5 +1,5 @@
 from src.utils.tokenizer import Command_Token
-from src.utils.constants import REGISTRY
+import src.utils.constants as constants
 
 
 class Applicator:
@@ -30,8 +30,8 @@ class Applicator:
 
         self.first_element = tokens[0]
         self.main_command = self.commands[0][1]
-        class_name = REGISTRY[self.main_command]["function"]
-        entry_point = REGISTRY[self.main_command]["entry-point"]
+        class_name = constants.REGISTRY[self.main_command]["function"]
+        entry_point = constants.REGISTRY[self.main_command]["entry-point"]
         class_instance = class_name()
         self.class_call = getattr(class_instance, entry_point)
 
@@ -41,8 +41,8 @@ class Applicator:
             raise SyntaxError(f"{self.first_element} не является командой!")
 
         # match aliases with full flags and make a unified list of them
-        local_flags = REGISTRY[self.first_element.value]['flags']
-        local_aliases = REGISTRY[self.first_element.value]['aliases']
+        local_flags = constants.REGISTRY[self.first_element.value]['flags']
+        local_aliases = constants.REGISTRY[self.first_element.value]['aliases']
         for short_flag in self.unique_short_flags:
             short_flag_alias = local_aliases.get(short_flag)
             if short_flag_alias == None:
