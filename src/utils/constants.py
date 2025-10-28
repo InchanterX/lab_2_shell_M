@@ -36,7 +36,7 @@ LONG_FLAGS_RE = f"(?P<LONG_FLAG>{PURE_LONG_FLAGS_RE})"
 #!!! Проверить, все ли символы разрешённые в путях вписаны в регулярку
 PURE_UNQUOTED_PARAMETERS_RE = r"[a-zA-Zа-яА-ЯёЁ0-9_\-./\\~\(\):]+"
 # PURE_QUOTED_PARAMETERS_RE = r"'[a-zA-Zа-яА-ЯёЁ0-9_\-./\\~\(\)]+'|\"[a-zA-Zа-яА-ЯёЁ0-9_\-./\\~\(\)]+\""
-PURE_QUOTED_PARAMETERS_RE = r"'[^']*'|\"[^\"]*\""
+PURE_QUOTED_PARAMETERS_RE = r"'([^']*)'|\"([^\"]*)\""
 UNQUOTED_PARAMETERS_RE = f"(?P<UNQUOTED_PARAMETER>{PURE_UNQUOTED_PARAMETERS_RE})"
 QUOTED_PARAMETERS_RE = f"(?P<QUOTED_PARAMETER>{PURE_QUOTED_PARAMETERS_RE})"
 

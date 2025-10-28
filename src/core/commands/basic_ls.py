@@ -15,7 +15,6 @@ class Ls:
     def ls(self, long_flags: list[str], parameters: list[str]) -> str:
         if 'help' in long_flags:
             return 'ls lists folders'
-        print(parameters)
         results = []
         output = []
         dirs = []
@@ -26,6 +25,8 @@ class Ls:
         else:
             for parameter in parameters:
                 original_parameter = parameter
+                parameter = parameter.replace('\'', '')
+                print(parameter)
                 parameter = os.path.expanduser(parameter)
                 if not os.path.isabs(parameter):
                     parameter = os.path.join(constants.CURRENT_DIR, parameter)
@@ -61,20 +62,21 @@ class Ls:
                         file_stat.st_mtime).strftime("%b %d %H:%M")
                     file_data = f"{file_permissions}  {file_links}  {file_size}  {file_modified} {file}"
                     final_output.append(file_data)
+            final_output = output + final_output
+            return "\n".join(final_output)
         else:
             for result in results:
                 final_output.extend(result)
-
-        final_output = output + final_output
-        return "\n".join(final_output)
+            final_output = output + final_output
+            return "   ".join(final_output)
 
 
 COMMAND_INFO = {
     "name": "ls",
     "function": Ls,
     "entry-point": "ls",
-    "flags": ["all", "long", "human-readable", "help"],
-    "aliases": {"a": "all", "l": "long", "h": "human-readable"},
+    "flags": ["all", "long", "help"],
+    "aliases": {"a": "all", "l": "long"},
     "description": "List files in the given folder."
 
 
