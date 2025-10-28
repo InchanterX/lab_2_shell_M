@@ -2,6 +2,8 @@ import os
 import stat
 import datetime
 import src.utils.constants as constants
+import logging
+from logging import Logger
 
 
 class Ls:
@@ -10,9 +12,11 @@ class Ls:
     '''
 
     def __init__(self) -> None:
-        pass
+        self._logger = logging.getLogger(__name__)
 
     def ls(self, long_flags: list[str], parameters: list[str]) -> str:
+        self._logger.debug(
+            f"Running ls with flags={long_flags}, parameters={parameters}")
         if 'help' in long_flags:
             return 'ls lists folders'
         results = []
@@ -22,6 +26,7 @@ class Ls:
             results.append(os.listdir(constants.CURRENT_DIR))
             parameters.append(constants.CURRENT_DIR)
             dirs.append(constants.CURRENT_DIR)
+            self._logger.info("No parameters were given, using CURRENT_DIR")
         else:
             for parameter in parameters:
                 original_parameter = parameter
@@ -31,17 +36,28 @@ class Ls:
                 if not os.path.isabs(parameter):
                     parameter = os.path.join(constants.CURRENT_DIR, parameter)
                 parameter = os.path.normpath(parameter)
-                if os.path.isfile(parameter):
-                    # error here
-                    output.append(
-                        f"ls: {original_parameter} can't be listed. It's a file!")
-                elif os.path.isdir(parameter):
-                    results.append(os.listdir(parameter))
-                    dirs.append(parameter)
-                else:
-                    # error here
-                    output.append(
-                        f"ls: Path {original_parameter} is invalid!")
+                self._logger.debug(
+                    f"Converted parameters: {original_parameter} -> {parameter}")
+                try:
+                    if os.path.isfile(parameter):
+                        self._logger.warning(
+                            f"Failed to list {parameter}. It's a file.")
+                        output.append(
+                            f"ls: {original_parameter} can't be listed. It's a file!")
+                    elif os.path.isdir(parameter):
+                        results.append(os.listdir(parameter))
+                        dirs.append(parameter)
+                        self._logger.debug(
+                            f"Listed directory {parameter}")
+                    else:
+                        self._logger.error(
+                            f"Invalid path {original_parameter}.")
+                        output.append(
+                            f"ls: Path {original_parameter} is invalid!")
+                except OSError as e:
+                    self._logger.exception(
+                        f"Failed to access {parameter}: {e}")
+                    output.append(f"ls: cannot access {original_parameter}!")
 
         if 'all' not in long_flags:
             for r in range(len(results)):
@@ -52,7 +68,6 @@ class Ls:
         final_output = []
         if 'long' in long_flags:
             for r in range(len(results)):
-                result_files = []
                 for file in results[r]:
                     file_stat = os.stat(os.path.join(dirs[r], file))
                     file_permissions = stat.filemode(file_stat.st_mode)

@@ -6,6 +6,8 @@ from src.utils.registry import Registry
 USER_HOME_DIR = os.path.expanduser("~")
 USER_LOGIN = os.getlogin()
 CURRENT_DIR = USER_HOME_DIR
+LOG_DIR = os.path.join(os.path.dirname(
+    os.path.abspath(__file__)), "../../.shell_log")
 
 # Modules data
 REGISTRY = Registry().registration()
