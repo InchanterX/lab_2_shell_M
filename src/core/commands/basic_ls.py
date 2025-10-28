@@ -15,6 +15,7 @@ class Ls:
     def ls(self, long_flags: list[str], parameters: list[str]) -> str:
         if 'help' in long_flags:
             return 'ls lists folders'
+        print(parameters)
         results = []
         output = []
         dirs = []
@@ -31,34 +32,41 @@ class Ls:
                 parameter = os.path.normpath(parameter)
                 if os.path.isfile(parameter):
                     # error here
-                    output.append([
-                        f"ls: {original_parameter} can't be listed. It's a file!"])
+                    output.append(
+                        f"ls: {original_parameter} can't be listed. It's a file!")
                 elif os.path.isdir(parameter):
                     results.append(os.listdir(parameter))
                     dirs.append(parameter)
                 else:
                     # error here
-                    output.append([
-                        f"ls: Path {original_parameter} is invalid!"])
+                    output.append(
+                        f"ls: Path {original_parameter} is invalid!")
 
         if 'all' not in long_flags:
             for r in range(len(results)):
                 results[r] = [file for file in results[r]
                               if not file.startswith('.')]
+
+        # If there will be enough time it will be great to add owners, groups and lining for output
+        final_output = []
         if 'long' in long_flags:
             for r in range(len(results)):
+                result_files = []
                 for file in results[r]:
                     file_stat = os.stat(os.path.join(dirs[r], file))
-                    if os.name == 'nt':
-                        # date = datetime.datetime.fromtimestamp(
-                        #     file_stat.st_mtime)
-                        print(stat.filemode(file_stat.st_mode),
-                              file_stat.st_nlink, "owner", "group", file_stat.st_size, datetime.datetime.fromtimestamp(
-                            file_stat.st_mtime).strftime("%b %d %H:%M"), file)
-                    else:
-                        # output with uid git for Linux
+                    file_permissions = stat.filemode(file_stat.st_mode)
+                    file_links = file_stat.st_nlink
+                    file_size = file_stat.st_size
+                    file_modified = datetime.datetime.fromtimestamp(
+                        file_stat.st_mtime).strftime("%b %d %H:%M")
+                    file_data = f"{file_permissions}  {file_links}  {file_size}  {file_modified} {file}"
+                    final_output.append(file_data)
+        else:
+            for result in results:
+                final_output.extend(result)
 
-        return results
+        final_output = output + final_output
+        return "\n".join(final_output)
 
 
 COMMAND_INFO = {
