@@ -17,8 +17,8 @@ def main() -> None:
             result = shell.shell(command)
             if result != "" and result != None:
                 print(result)
-        except OSError:
-            print("Ошибка операционной системы. Венда удалиться через 3... 2... 1...")
+        # except OSError:
+        #     print("Ошибка операционной системы. Венда удалиться через 3... 2... 1...")
         except Exception as e:
             print(e)
 

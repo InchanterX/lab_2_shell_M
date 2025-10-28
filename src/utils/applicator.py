@@ -57,7 +57,3 @@ class Applicator:
 # Tests to make
 # Entering wrong short flag
 # Entering wrong long flag
-
-
-# result = Applicator().application()
-# print(result)
