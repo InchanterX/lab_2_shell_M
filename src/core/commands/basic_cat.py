@@ -14,7 +14,6 @@ class Cat:
         self._logger = logging.getLogger(__name__)
 
     def cat(self, long_flags: list[str], parameters: list[str]) -> str:
-        print(parameters)
         self._logger.debug(
             f"Running cat with flags={long_flags}, parameters={parameters}")
 
@@ -32,14 +31,11 @@ class Cat:
         for parameter in parameters:
             # Converting parameter to a absolute normalized path
             original_parameter = parameter
-            print(parameter)
-            if parameter[0] == '\'' and parameter[-1] == '\'':
-                parameter = parameter[1:-1]
+            parameter = parameter.replace('\'', '')
             parameter = os.path.expanduser(parameter)
             if not os.path.isabs(parameter):
                 parameter = os.path.join(constants.CURRENT_DIR, parameter)
             parameter = os.path.normpath(parameter)
-            print(parameter)
 
             try:
                 # dir was given

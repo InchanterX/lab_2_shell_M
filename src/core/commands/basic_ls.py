@@ -30,7 +30,6 @@ class Ls:
             for parameter in parameters:
                 original_parameter = parameter
                 parameter = parameter.replace('\'', '')
-                print(parameter)
                 parameter = os.path.expanduser(parameter)
                 if not os.path.isabs(parameter):
                     parameter = os.path.join(constants.CURRENT_DIR, parameter)

@@ -27,7 +27,6 @@ class Cd:
                 raise SyntaxError(
                     f"cd: You can't switch to {parameter}. It's a file!")
             elif os.path.isdir(parameter):
-                print(parameter)
                 constants.CURRENT_DIR = parameter
             else:
                 raise SyntaxError(f"cd: Path {parameter} doesn't exist!")
