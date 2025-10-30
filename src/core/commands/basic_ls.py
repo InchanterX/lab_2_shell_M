@@ -3,7 +3,6 @@ import stat
 import datetime
 import src.utils.constants as constants
 import logging
-from logging import Logger
 
 
 class Ls:

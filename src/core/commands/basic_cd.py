@@ -17,11 +17,10 @@ class Cd:
             constants.CURRENT_DIR = constants.USER_HOME_DIR
 
         for parameter in parameters:
+            # Converting parameter to a absolute normalized path
             parameter = os.path.expanduser(parameter)
-
             if not os.path.isabs(parameter):
                 parameter = os.path.join(constants.CURRENT_DIR, parameter)
-
             parameter = os.path.normpath(parameter)
 
             if os.path.isfile(parameter):
