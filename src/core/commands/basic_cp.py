@@ -1,14 +1,13 @@
 import os
 import shutil
 import logging
-import src.utils.constants as constants
 from src.utils.path_normalizer import Normalizer
 
 
 class Cp:
     '''
-    Command "cp" takes lists of flags and parameters.
-    If given paths to 1 or more files and a folder to copy in, it copy files.
+    Command "cp" takes lists of flags (--help, --recursive or -r) and parameters (>=1 file|folder for copy, 1 target folder).
+    If given paths are valid, it copy files.
     Otherwise it return an exception.
     '''
 
@@ -21,6 +20,7 @@ class Cp:
 
         # help call
         if 'help' in long_flags:
+            self._logger.info("Returned help string.")
             return 'cp [-r|--recursive|--help] [file1 ... fileN folder] - display file\'s content.'
 
         # no parameters were given
@@ -28,16 +28,15 @@ class Cp:
             self._logger.error("No parameters were given.")
             raise SyntaxError("cp: No parameters were given.")
 
-        # no enough parameters were given
+        # not enough parameters were given
         if len(parameters) == 1:
             self._logger.error("Not enough parameters were given.")
             raise SyntaxError("cp: Not enough parameters were given.")
 
-        # processing parameters
+        # processing flags
+        recursive = 0
         if 'recursive' in long_flags:
             recursive = 1
-        else:
-            recursive = 0
 
         # target folder processing
         original_folder_path = parameters[-1]
@@ -53,9 +52,10 @@ class Cp:
             original_file_path = file_path
             file_path = Normalizer().normalize(file_path)
 
-            # file given
+            # file was given
             if os.path.isfile(file_path):
                 try:
+                    # copy file to a directory
                     shutil.copyfile(file_path, os.path.join(
                         folder_path, os.path.basename(file_path)))
                     self._logger.debug(
@@ -64,8 +64,9 @@ class Cp:
                     self._logger.exception(f"Failed to copy {file_path}: {e}")
                     output.append(f"cp: failed to copy {original_file_path}.")
 
-            # folder given
+            # folder was given
             elif os.path.isdir(file_path):
+                # check for recursive flag
                 if recursive == 0:
                     self._logger.warning(
                         f"Failed to copy folder {file_path}. Flag --recursive was not given.")
@@ -73,6 +74,7 @@ class Cp:
                         f"cp: you can't copy folder {original_file_path} without flag [-r|--recursive].")
                 else:
                     try:
+                        # copy file to a directory
                         shutil.copytree(file_path, os.path.join(
                             folder_path, os.path.basename(file_path)), dirs_exist_ok=True)
                         self._logger.debug(
@@ -83,12 +85,13 @@ class Cp:
                         output.append(
                             f"cp: failed to copy {original_file_path}.")
 
-            # invalid file given
+            # invalid file was given
             else:
                 self._logger.error(f"Path not found: {file_path}")
                 output.append(
                     f"cp: failed to copy {original_file_path}. It doesn't exist.")
 
+        self._logger.info("Cp successfully copied all valid files.")
         return "\n".join(output)
 
 
