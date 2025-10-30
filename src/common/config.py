@@ -1,4 +1,3 @@
-import logging.config
 import os
 from src.utils.constants import LOG_DIR
 
@@ -14,11 +13,6 @@ LOGGING_CONFIG = {
         }
     },
     "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-            "formatter": "standard",
-            "level": "DEBUG",
-        },
         "file": {
             "class": "logging.handlers.RotatingFileHandler",
             "formatter": "standard",

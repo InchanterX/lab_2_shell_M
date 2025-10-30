@@ -1,4 +1,3 @@
-from src.utils.tokenizer import Command_Token
 import src.utils.constants as constants
 
 
@@ -41,19 +40,14 @@ class Applicator:
             raise SyntaxError(f"{self.first_element} is not a command!")
 
         # match aliases with full flags and make a unified list of them
-        local_flags = constants.REGISTRY[self.first_element.value]['flags']
         local_aliases = constants.REGISTRY[self.first_element.value]['aliases']
         for short_flag in self.unique_short_flags:
             short_flag_alias = local_aliases.get(short_flag)
-            if short_flag_alias == None:
+            if short_flag_alias is None:
                 raise AttributeError(
                     f"Command {self.main_command} don't have flag {short_flag}!")
             elif short_flag_alias not in self.long_flags:
                 self.long_flags.append(short_flag_alias)
 
         result = self.class_call(self.long_flags, self.parameters)
-        return result  # for now
-
-# Tests to make
-# Entering wrong short flag
-# Entering wrong long flag
+        return result

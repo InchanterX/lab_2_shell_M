@@ -8,5 +8,5 @@ dependencies = [
 ]
 
 [tool.mypy]
-python_version = "3.12.2"
+python_version = "3.12"
 ignore_missing_imports = true
