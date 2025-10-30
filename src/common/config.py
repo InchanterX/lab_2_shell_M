@@ -27,6 +27,7 @@ LOGGING_CONFIG = {
             "maxBytes": 5 * 1024 * 1024,  # 5 MB before rotating
             "backupCount": 5,
             "level": "DEBUG",
+            "encoding": "utf-8"
         },
     },
     "loggers": {

@@ -6,6 +6,7 @@ from src.common.config import LOGGING_CONFIG
 
 
 def main() -> None:
+
     logging.config.dictConfig(LOGGING_CONFIG)
     logger = logging.getLogger(__name__)
     logger.info("Logging initialized.")
@@ -13,6 +14,7 @@ def main() -> None:
 
     while True:
         command = input(f"{constants.USER_LOGIN}|{constants.CURRENT_DIR}>")
+        logger.info(f"User entered command: {command}")
 
         if command.lower() in ("exit", "quit"):
             print("Exiting the console.")

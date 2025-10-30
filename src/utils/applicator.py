@@ -38,7 +38,7 @@ class Applicator:
     def application(self) -> str:
         # check if entered command is verily a command
         if (self.first_element.type != "COMMAND") or (len(self.commands) == 0):
-            raise SyntaxError(f"{self.first_element} не является командой!")
+            raise SyntaxError(f"{self.first_element} is not a command!")
 
         # match aliases with full flags and make a unified list of them
         local_flags = constants.REGISTRY[self.first_element.value]['flags']
@@ -47,7 +47,7 @@ class Applicator:
             short_flag_alias = local_aliases.get(short_flag)
             if short_flag_alias == None:
                 raise AttributeError(
-                    f"Команда {self.main_command} не имеет флаг -{short_flag}!")
+                    f"Command {self.main_command} don't have flag {short_flag}!")
             elif short_flag_alias not in self.long_flags:
                 self.long_flags.append(short_flag_alias)
 
