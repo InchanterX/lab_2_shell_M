@@ -16,7 +16,7 @@ class Normalizer:
     def normalize(self, path: str) -> str:
         original_path = path
 
-        # exclude extra '
+        # exclude extra ' and "
         path = path.replace('\'', '')
         path = path.replace('\"', '')
 

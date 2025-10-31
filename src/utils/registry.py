@@ -17,7 +17,7 @@ class Registry:
         self.commands: dict[str, dict[str, Any]] = {}
         self._logger = logging.getLogger(__name__)
 
-    def registration(self) -> dict[str, dict[str, Any]]:
+    def registration(self) -> tuple[bool, dict[str, dict[str, Any]]]:
 
         try:
             # search for python files in the src/core
@@ -35,13 +35,17 @@ class Registry:
                 spec = importlib.util.spec_from_file_location(
                     module_name, module_path)
 
+                # check the existence of spec
                 if spec is None:
                     self._logger.warning(
                         f"Couldn't load spec for module {module_name}.")
+                    continue
 
+                # check the existence of loader
                 if spec.loader is None:
                     self._logger.warning(
                         f"Couldn't load spec for module {module_name}, there is no loader.")
+                    continue
 
                 module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(module)
@@ -62,4 +66,4 @@ class Registry:
                 "If you see this error, it means that there is a fundamental problem in generating registry. Check the state of the src/code folder and files completeness.")
             raise AttributeError("This project is ass.")
 
-        return commands
+        return True, commands

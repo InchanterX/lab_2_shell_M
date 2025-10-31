@@ -79,6 +79,7 @@ class Cp:
                             folder_path, os.path.basename(file_path)), dirs_exist_ok=True)
                         self._logger.debug(
                             f"Copied folder {file_path} to {folder_path}.")
+                    # catch unexpected copying exceptions
                     except Exception as e:
                         self._logger.exception(
                             f"Failed to copy {file_path}: {e}")

@@ -2,6 +2,7 @@ import os
 import re
 from src.utils.registry import Registry
 
+# Define basic paths
 USER_HOME_DIR = os.path.expanduser("~")
 USER_LOGIN = os.getlogin()
 CURRENT_DIR = USER_HOME_DIR
@@ -9,7 +10,7 @@ LOG_DIR = os.path.join(os.path.dirname(
     os.path.abspath(__file__)), "../../.shell_log")
 
 # Modules data
-REGISTRY = Registry().registration()
+SUCCESS, REGISTRY = Registry().registration()
 NAMES = list(REGISTRY.keys())
 FLAGS = set(flag for name in NAMES for flag in REGISTRY[name]["flags"])
 
@@ -37,7 +38,6 @@ QUOTED_PARAMETERS_RE = f"(?P<QUOTED_PARAMETER>{PURE_QUOTED_PARAMETERS_RE})"
 
 # Regular expression for all that remained
 UNKNOWN_RE = "(?P<UNKNOWN>.)"
-
 
 # Ordered regular expressions
 ALL_EXPRESSIONS = [COMMANDS_RE, LONG_FLAGS_RE, SHORT_FLAGS_RE,

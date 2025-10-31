@@ -53,11 +53,13 @@ class Cat:
                             self._logger.debug(
                                 f"Successfully opened and displayed file {parameter}.")
                             output.append(file_content)
+                    # append a error to the output if file is binary
                     except UnicodeDecodeError:
                         self._logger.exception(
                             f"File {parameter} can't be displayed. It is binary file.")
                         output.append(
                             f"cat: cannot display binary file {original_parameter}!")
+                    # append a error to the output if file is unaccessible
                     except PermissionError:
                         self._logger.exception(
                             f"Failed to access {parameter}.")
