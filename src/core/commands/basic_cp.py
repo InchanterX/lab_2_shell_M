@@ -21,7 +21,7 @@ class Cp:
         # help call
         if 'help' in long_flags:
             self._logger.info("Returned help string.")
-            return 'cp [-r|--recursive|--help] [file1 ... fileN folder] - display file\'s content.'
+            return 'cp [-r|--recursive|--help] [file1 ... fileN folder] - copy files and folders.'
 
         # no parameters were given
         if parameters == []:
