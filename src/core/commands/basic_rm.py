@@ -12,7 +12,8 @@ class Rm:
     If several parameters are given without --force will ask user's consent.
     '''
 
-    def __init__(self) -> None:
+    def __init__(self, normalizer: Normalizer) -> None:
+        self._normalize = normalizer
         self._logger = logging.getLogger(__name__)
 
     def rm(self, long_flags: list[str], parameters: list[str]) -> str:
@@ -41,7 +42,7 @@ class Rm:
         output = []
         for parameter in parameters:
             original_parameter = parameter
-            parameter = Normalizer().normalize(parameter)
+            parameter = self._normalize.normalize(parameter)
 
             # prohibited path is given
             if parameter in ("/", os.path.abspath("..")):
@@ -62,6 +63,7 @@ class Rm:
                         f"There is no permissions to delete {parameter}.")
                     output.append(
                         f"rm: cannot delete {original_parameter}. Permission denied.")
+                # OSError излишня
                 except OSError as e:
                     self._logger.exception(
                         f"Failed to delete {parameter}: {e}")
@@ -73,7 +75,7 @@ class Rm:
 
                 # check if folder is empty
                 folder_is_empty = False
-                if len(os.listdir(parameter)) == 0:
+                if not os.listdir(parameter):
                     folder_is_empty = True
 
                 # ask for a consent to delete a folder
