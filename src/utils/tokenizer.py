@@ -30,12 +30,26 @@ class Tokenizer:
         tokens: list[Command_Token] = []
         order = 0
         last_element = None
+        check_for_command = True
 
         for element in constants.MASTER_RE.finditer(command):
             # separate element parameters for a simpler usage
             kind = element.lastgroup
             content = element.group()
             position = order
+
+            # check is entered string is a command
+            if check_for_command:
+                if kind == "SPACE":
+                    pass
+                elif kind == "COMMAND":
+                    check_for_command = False
+                else:
+                    self._logger.error(
+                        f"Invalid value {content} was placed on the command position.")
+                    raise SyntaxError(
+                        f"Command must start with a command name. {content} is not a command!"
+                    )
 
             # exclude spaces b/c they are insignificant
             if kind == "SPACE":
