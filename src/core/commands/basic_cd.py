@@ -1,5 +1,6 @@
 import src.infrastructure.constants as constants
 from src.services.path_normalizer import Normalizer
+from src.services.help_call import Helper
 import os
 import logging
 
@@ -10,8 +11,9 @@ class Cd:
     It get flags and parameters and change the constant variable CURRENT_PATH.
     '''
 
-    def __init__(self, normalizer: Normalizer) -> None:
+    def __init__(self, normalizer: Normalizer, helper: Helper) -> None:
         self._normalize = normalizer
+        self._helper = helper
         self._logger = logging.getLogger(__name__)
 
     def cd(self, long_flags: list[str], parameters: list[str]) -> str:
@@ -20,7 +22,7 @@ class Cd:
 
         # call help
         if long_flags != [] and long_flags[0] == "help":
-            return "cd [parameter] change the current directory"
+            return self._helper.call_help("cd")
 
         # if parameters are empty switch to user's home folder
         if parameters == []:

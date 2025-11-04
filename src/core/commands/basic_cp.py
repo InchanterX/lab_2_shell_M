@@ -2,6 +2,7 @@ import os
 import shutil
 import logging
 from src.services.path_normalizer import Normalizer
+from src.services.help_call import Helper
 
 
 class Cp:
@@ -11,8 +12,9 @@ class Cp:
     Otherwise it return an exception.
     '''
 
-    def __init__(self, normalizer: Normalizer) -> None:
+    def __init__(self, normalizer: Normalizer, helper: Helper) -> None:
         self._normalize = normalizer
+        self._helper = helper
         self._logger = logging.getLogger(__name__)
 
     def cp(self, long_flags: list[str], parameters: list[str]) -> str:
@@ -21,8 +23,7 @@ class Cp:
 
         # help call
         if 'help' in long_flags:
-            self._logger.info("Returned help string.")
-            return 'cp [-r|--recursive|--help] [file1 ... fileN folder] - copy files and folders.'
+            return self._helper.call_help("cp")
 
         # no parameters were given
         if parameters == []:

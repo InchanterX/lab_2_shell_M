@@ -2,6 +2,7 @@ import os
 import shutil
 import logging
 from src.services.path_normalizer import Normalizer
+from src.services.help_call import Helper
 
 
 class Rm:
@@ -12,8 +13,9 @@ class Rm:
     If several parameters are given without --force will ask user's consent.
     '''
 
-    def __init__(self, normalizer: Normalizer) -> None:
+    def __init__(self, normalizer: Normalizer, helper: Helper) -> None:
         self._normalize = normalizer
+        self._helper = helper
         self._logger = logging.getLogger(__name__)
 
     def rm(self, long_flags: list[str], parameters: list[str]) -> str:
@@ -22,8 +24,7 @@ class Rm:
 
         # help call
         if 'help' in long_flags:
-            self._logger.info("Returned help string.")
-            return 'rm [-r|--recursive|-f|--force|--help] [files|folders] - delete files and folders.'
+            return self._helper.call_help("rm")
 
         # no parameters were given
         if parameters == []:
@@ -63,12 +64,6 @@ class Rm:
                         f"There is no permissions to delete {parameter}.")
                     output.append(
                         f"rm: cannot delete {original_parameter}. Permission denied.")
-                # OSError излишня
-                except OSError as e:
-                    self._logger.exception(
-                        f"Failed to delete {parameter}: {e}")
-                    output.append(
-                        f"rm: failed to delete {original_parameter}.")
 
             # folder was given
             elif os.path.isdir(parameter):

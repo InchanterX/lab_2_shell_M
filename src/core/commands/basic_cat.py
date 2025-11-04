@@ -1,6 +1,6 @@
 import os
 import logging
-import src.infrastructure.constants as constants
+from src.services.help_call import Helper
 from src.services.path_normalizer import Normalizer
 
 
@@ -11,8 +11,9 @@ class Cat:
     Otherwise it return corresponding error.
     '''
 
-    def __init__(self, normalizer: Normalizer) -> None:
+    def __init__(self, normalizer: Normalizer, helper: Helper) -> None:
         self._normalize = normalizer
+        self._helper = helper
         self._logger = logging.getLogger(__name__)
 
     def cat(self, long_flags: list[str], parameters: list[str]) -> str:
@@ -21,7 +22,7 @@ class Cat:
 
         # help call
         if 'help' in long_flags:
-            return 'cat display file\'s content.'
+            return self._helper.call_help("cat")
 
         # no parameters were given
         if parameters == []:

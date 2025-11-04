@@ -15,18 +15,18 @@ class Ls:
     "Long" extend information about every file and information. "Help" return help.
     '''
 
-    def __init__(self, normalizer: Normalizer) -> None:
+    def __init__(self, normalizer: Normalizer, helper: Helper) -> None:
         self._normalize = normalizer
+        self._helper = helper
         self._logger = logging.getLogger(__name__)
 
     def ls(self, long_flags: list[str], parameters: list[str]) -> str:
         self._logger.debug(
             f"Running ls with flags={long_flags}, parameters={parameters}")
 
-        Helper().call_help("ls")
         # return help if such flag is given
         if 'help' in long_flags:
-            return 'ls [--all|--long|--help|-a|-l] [parameters] lists folders content'
+            return self._helper.call_help("ls")
 
         results = []
         output = []
@@ -37,7 +37,7 @@ class Ls:
             results.append(os.listdir(constants.CURRENT_DIR))
             parameters.append(constants.CURRENT_DIR)
             dirs.append(constants.CURRENT_DIR)
-            self._logger.info("No parameters were given, using CURRENT_DIR")
+            self._logger.debug("No parameters were given, using CURRENT_DIR")
         # otherwise process every parameter by an algorithm
         else:
             for parameter in parameters:
@@ -63,10 +63,11 @@ class Ls:
                         output.append(
                             f"ls: Path {original_parameter} is invalid!")
                 # if program failed to process file it is unaccessible
-                except OSError as e:
+                except PermissionError:
                     self._logger.exception(
-                        f"Failed to access {parameter}: {e}")
-                    output.append(f"ls: cannot access {original_parameter}!")
+                        f"There is no permissions to delete {parameter}.")
+                    output.append(
+                        f"ls: cannot delete {original_parameter}. Permission denied.")
 
         # process flag --all if it was given
         if 'all' not in long_flags:
@@ -100,7 +101,7 @@ class Ls:
 
 COMMAND_INFO = {
     "name": "ls",
-    "function": lambda: Ls(Normalizer()),
+    "function": lambda: Ls(Normalizer(), Helper()),
     "entry-point": "ls",
     "flags": ["all", "long", "help"],
     "aliases": {"a": "all", "l": "long"},

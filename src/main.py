@@ -31,10 +31,11 @@ def main() -> None:
                 # don't log the result
                 print(result)
 
-        # legacy code
-        # except OSError:
-        #     print("Ошибка операционной системы. Венда удалиться через 3... 2... 1...")
-
+        # catch unexpected os errors
+        except OSError as e:
+            logger.exception(
+                f"Command failed to execute with a error: {e}")
+            print("An unexpected os error occurred. Check log file for information.")
         # return error if it occurred in the program in a pretty way
         except Exception as e:
             print(e)
