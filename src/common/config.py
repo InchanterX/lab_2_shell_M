@@ -1,5 +1,5 @@
 import os
-from src.utils.constants import LOG_DIR
+from src.infrastructure.constants import LOG_DIR
 
 os.makedirs(LOG_DIR, exist_ok=True)
 

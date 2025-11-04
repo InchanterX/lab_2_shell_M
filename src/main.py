@@ -1,4 +1,4 @@
-import src.utils.constants as constants
+import src.infrastructure.constants as constants
 from src.shell.shell import Shell
 import logging
 import logging.config

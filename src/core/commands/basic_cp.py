@@ -1,7 +1,7 @@
 import os
 import shutil
 import logging
-from src.utils.path_normalizer import Normalizer
+from src.services.path_normalizer import Normalizer
 
 
 class Cp:
@@ -11,7 +11,8 @@ class Cp:
     Otherwise it return an exception.
     '''
 
-    def __init__(self) -> None:
+    def __init__(self, normalizer: Normalizer) -> None:
+        self._normalize = normalizer
         self._logger = logging.getLogger(__name__)
 
     def cp(self, long_flags: list[str], parameters: list[str]) -> str:
@@ -49,8 +50,8 @@ class Cp:
         # processing copy of files and folders
         output = []
         for file_path in parameters[:-1]:
-            original_file_path = file_path
-            file_path = Normalizer().normalize(file_path)
+            original_file_path, file_path = self._normalize.normalize(
+                file_path)
 
             # file was given
             if os.path.isfile(file_path):

@@ -2,7 +2,7 @@ import os
 import pytest
 from pyfakefs.fake_filesystem import FakeFilesystem
 from src.shell.shell import Shell
-import src.utils.constants as constants
+import src.infrastructure.constants as constants
 
 
 def test_cat_help_call(fs: FakeFilesystem):

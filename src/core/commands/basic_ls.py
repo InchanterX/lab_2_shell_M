@@ -1,9 +1,10 @@
 import os
 import stat
 import datetime
-import src.utils.constants as constants
+import src.infrastructure.constants as constants
 import logging
-from src.utils.path_normalizer import Normalizer
+from src.services.path_normalizer import Normalizer
+from src.services.help_call import Helper
 
 
 class Ls:
@@ -14,13 +15,15 @@ class Ls:
     "Long" extend information about every file and information. "Help" return help.
     '''
 
-    def __init__(self) -> None:
+    def __init__(self, normalizer: Normalizer) -> None:
+        self._normalize = normalizer
         self._logger = logging.getLogger(__name__)
 
     def ls(self, long_flags: list[str], parameters: list[str]) -> str:
         self._logger.debug(
             f"Running ls with flags={long_flags}, parameters={parameters}")
 
+        Helper().call_help("ls")
         # return help if such flag is given
         if 'help' in long_flags:
             return 'ls [--all|--long|--help|-a|-l] [parameters] lists folders content'
@@ -38,8 +41,8 @@ class Ls:
         # otherwise process every parameter by an algorithm
         else:
             for parameter in parameters:
-                original_parameter = parameter
-                parameter = Normalizer().normalize(parameter)
+                original_parameter, parameter = self._normalize.normalize(
+                    parameter)
                 try:
                     # if file is given, append error and continue
                     if os.path.isfile(parameter):
@@ -97,7 +100,7 @@ class Ls:
 
 COMMAND_INFO = {
     "name": "ls",
-    "function": Ls,
+    "function": lambda: Ls(Normalizer()),
     "entry-point": "ls",
     "flags": ["all", "long", "help"],
     "aliases": {"a": "all", "l": "long"},

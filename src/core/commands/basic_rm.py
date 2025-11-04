@@ -1,7 +1,7 @@
 import os
 import shutil
 import logging
-from src.utils.path_normalizer import Normalizer
+from src.services.path_normalizer import Normalizer
 
 
 class Rm:
@@ -41,8 +41,8 @@ class Rm:
         # processing removing of files and folders
         output = []
         for parameter in parameters:
-            original_parameter = parameter
-            parameter = self._normalize.normalize(parameter)
+            original_parameter, parameter = self._normalize.normalize(
+                parameter)
 
             # prohibited path is given
             if parameter in ("/", os.path.abspath("..")):

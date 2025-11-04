@@ -1,6 +1,7 @@
 import os
 import logging
-import src.utils.constants as constants
+import src.infrastructure.constants as constants
+from src.services.path_normalizer import Normalizer
 
 
 class Cat:
@@ -10,7 +11,8 @@ class Cat:
     Otherwise it return corresponding error.
     '''
 
-    def __init__(self) -> None:
+    def __init__(self, normalizer: Normalizer) -> None:
+        self._normalize = normalizer
         self._logger = logging.getLogger(__name__)
 
     def cat(self, long_flags: list[str], parameters: list[str]) -> str:
@@ -30,12 +32,8 @@ class Cat:
         output = []
         for parameter in parameters:
             # Converting parameter to a absolute normalized path
-            original_parameter = parameter
-            parameter = parameter.replace('\'', '')
-            parameter = os.path.expanduser(parameter)
-            if not os.path.isabs(parameter):
-                parameter = os.path.join(constants.CURRENT_DIR, parameter)
-            parameter = os.path.normpath(parameter)
+            original_parameter, parameter = self._normalize.normalize(
+                parameter)
 
             try:
                 # dir was given

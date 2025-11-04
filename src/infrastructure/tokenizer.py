@@ -1,4 +1,4 @@
-import src.utils.constants as constants
+import src.infrastructure.constants as constants
 from typing import Any
 from dataclasses import dataclass
 import logging

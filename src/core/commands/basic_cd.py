@@ -1,5 +1,5 @@
-import src.utils.constants as constants
-from src.utils.path_normalizer import Normalizer
+import src.infrastructure.constants as constants
+from src.services.path_normalizer import Normalizer
 import os
 import logging
 
@@ -10,7 +10,8 @@ class Cd:
     It get flags and parameters and change the constant variable CURRENT_PATH.
     '''
 
-    def __init__(self) -> None:
+    def __init__(self, normalizer: Normalizer) -> None:
+        self._normalize = normalizer
         self._logger = logging.getLogger(__name__)
 
     def cd(self, long_flags: list[str], parameters: list[str]) -> str:
@@ -28,8 +29,8 @@ class Cd:
         # otherwise it process given parameters. Yes it can switch folders several times. Why not?
         for parameter in parameters:
             # converting parameter to an absolute normalized path
-            original_parameter = parameter
-            parameter = Normalizer().normalize(parameter)
+            original_parameter, parameter = self._normalize.normalize(
+                parameter)
 
             # raise a error if file is given
             if os.path.isfile(parameter):

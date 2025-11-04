@@ -1,5 +1,5 @@
-from src.utils.tokenizer import Tokenizer
-from src.utils.applicator import Applicator
+from src.infrastructure.tokenizer import Tokenizer
+from src.infrastructure.applicator import Applicator
 
 
 class Shell:

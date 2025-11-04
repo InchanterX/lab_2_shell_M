@@ -1,5 +1,5 @@
 import pytest
-from src.utils.tokenizer import Tokenizer, Command_Token
+from src.infrastructure.tokenizer import Tokenizer, Command_Token
 
 
 def test_short_flag():

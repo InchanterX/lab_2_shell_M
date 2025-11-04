@@ -1,6 +1,6 @@
 import os
 import re
-from src.utils.registry import Registry
+from src.infrastructure.registry import Registry
 
 # Define basic paths
 USER_HOME_DIR = os.path.expanduser("~")
