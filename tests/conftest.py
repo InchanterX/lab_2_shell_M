@@ -4,7 +4,7 @@ import importlib
 import src.infrastructure.constants as constants
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def setup_fake_environment(fs):
     '''
     Automatically setup fake environment by editing constants and creating files and folders for tests.
