@@ -83,7 +83,7 @@ class Cat:
 
 COMMAND_INFO = {
     "name": "cat",
-    "function": Cat,
+    "function": lambda: Cat(Normalizer(), Helper()),
     "entry-point": "cat",
     "flags": ["help"],
     "aliases": {},

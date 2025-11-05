@@ -50,7 +50,7 @@ class Cd:
 
 COMMAND_INFO = {
     "name": "cd",
-    "function": Cd,
+    "function": lambda: Cd(Normalizer(), Helper()),
     "entry-point": "cd",
     "flags": ["help"],
     "aliases": {},

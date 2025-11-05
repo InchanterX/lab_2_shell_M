@@ -122,7 +122,7 @@ class Rm:
 
 COMMAND_INFO = {
     "name": "rm",
-    "function": Rm,
+    "function": lambda: Rm(Normalizer(), Helper()),
     "entry-point": "rm",
     "flags": ["recursive", "force" "help"],
     "aliases": {"r": "recursive", "f": "force"},

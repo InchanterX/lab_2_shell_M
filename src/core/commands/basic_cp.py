@@ -100,7 +100,7 @@ class Cp:
 
 COMMAND_INFO = {
     "name": "cp",
-    "function": Cp,
+    "function": lambda: Cp(Normalizer(), Helper()),
     "entry-point": "cp",
     "flags": ["recursive", "help"],
     "aliases": {"r": "recursive"},
