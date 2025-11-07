@@ -33,10 +33,8 @@ class Ls:
         dirs = []
 
         # if no parameters are given, works with current directory
-        print(os.listdir(constants.CURRENT_DIR))
         if parameters == []:
             results.append(os.listdir(constants.CURRENT_DIR))
-            print(results)
             parameters.append(constants.CURRENT_DIR)
             dirs.append(constants.CURRENT_DIR)
             self._logger.debug("No parameters were given, using CURRENT_DIR")

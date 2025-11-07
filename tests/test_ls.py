@@ -1,3 +1,4 @@
+from pyfakefs.fake_filesystem_unittest import Patcher
 import os
 import src.infrastructure.constants as constants
 from pyfakefs.fake_filesystem import FakeFilesystem
@@ -47,3 +48,10 @@ def test_ls_current_dir(fs: FakeFilesystem):
     result = shell.shell("ls")
     assert "folder1" in result
     assert "folder3" in result
+
+
+fs = FakeFilesystem()
+# или — более правильный способ:
+with Patcher() as patcher:
+    fs = patcher.fs
+    test_ls_current_dir(fs)
