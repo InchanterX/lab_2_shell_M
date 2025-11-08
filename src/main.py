@@ -13,32 +13,35 @@ def main() -> None:
     logger.info("Logging initialized.")
     print("Console is loading...")
 
-    while True:
-        # read users commands
-        command = input(f"{constants.USER_LOGIN}|{constants.CURRENT_DIR}>")
-        logger.info(f"User entered command: {command}")
+    try:
+        while True:
+            # read users commands
+            command = input(f"{constants.USER_LOGIN}|{constants.CURRENT_DIR}>")
+            logger.info(f"User entered command: {command}")
 
-        # stop the program if stop word was given
-        if command.lower() in ("exit", "quit"):
-            print("Exiting the console.")
-            break
+            # stop the program if stop word was given
+            if command.lower() in ("exit", "quit"):
+                print("Exiting the console.")
+                break
 
-        # try to process given command
-        try:
-            shell = Shell()
-            result = shell.shell(command)
-            if result != "" and result is not None:
-                # don't log the result
-                print(result)
+            # try to process given command
+            try:
+                shell = Shell()
+                result = shell.shell(command)
+                if result != "" and result is not None:
+                    # don't log the result
+                    print(result)
 
-        # catch unexpected os errors
-        except OSError as e:
-            logger.exception(
-                f"Command failed to execute with a error: {e}")
-            print("An unexpected os error occurred. Check log file for information.")
-        # return error if it occurred in the program in a pretty way
-        except Exception as e:
-            print(e)
+            # catch unexpected os errors
+            except OSError as e:
+                logger.exception(
+                    f"Command failed to execute with a error: {e}")
+                print("An unexpected os error occurred. Check log file for information.")
+            # return error if it occurred in the program in a pretty way
+            except Exception as e:
+                print(e)
+    except KeyboardInterrupt:
+        print("Exiting the console.")
 
 
 if __name__ == "__main__":
