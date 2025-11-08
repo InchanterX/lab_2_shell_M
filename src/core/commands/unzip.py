@@ -36,10 +36,10 @@ class Unzip:
                 parameter)
             if not os.path.exists(path):
                 self._logger.error(f"Path {path} is invalid.")
-                output.append(f"zip: {original_path} doesn't exist!")
+                output.append(f"unzip: {original_path} doesn't exist!")
             elif not os.access(path, os.R_OK):
                 self._logger.error(f"Path {path} is unaccessible.")
-                output.append(f"zip: Can't access {original_path}!")
+                output.append(f"unzip: Can't access {original_path}!")
             elif not zipfile.is_zipfile(path):
                 self._logger.error(
                     f"{path} can't be unzipped because it isn't an archive.")

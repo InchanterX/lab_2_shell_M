@@ -112,4 +112,109 @@ Command print content of a file if it is not a folder or not a binary file. If a
 ## Cp
 Command copy files and directories to a target folder. Folders with content in them can be copied only with --recursive flag.
 
-##
+## Ls
+Command lists given folders. Supports showing hidden files using flag --all and showing wider list of information about every file via flag --long.
+
+## Mv
+Command that move file to a target place. If only two files were given it will work as a renaming. But in basic cases all the files will be moved to a target folder if everything is valid.
+
+## Rm
+Command removes given files. Files can always be easily removed. Folders can be deleted with user confirmation or --recursive flags. Or you can just --force everything and ignore all unpleasant questions.
+
+## Archive (zip, unzip, tar, untar)
+These 2 pairs of commands are used to work with archives. You can gather files to 2 types of archives using zip and tar. And unzip them by unzip and untar. New archives appears in the current folder with a name "archive$.\[zip|tar.gz]" where $ is a number that prevents files collisions.
+
+## Grep
+
+## History
+
+## Undo
+
+# Users commands
+Users of the console can do their own commands and easily add them to the other commands using services and basic structure.
+In folder src/core/user_commands you can find an example of user's command and write your own the same way.
+
+## Small guide about making pwd by your own
+1. First of all, ypu need to make a python file with a name you like. For pwd it will be "pwd.py".
+2. Then you need to make this file a command in from the point of view of the console by adding a configuration variable.
+```python
+COMMAND_INFO = {
+    "name": "pwd", # command name
+    "function": lambda: Pwd(Helper()), # factory with command class and services that are used in command
+    "entry-point": "pwd", # main function that runs the command
+    "flags": ["help"], # flags that can be applied to you command
+    "aliases": {"h": "help"}, # shortenings to you flags
+    "description": "Returns current directory." # Just a description
+}
+```
+Fields of flags, aliases and descriptions are not mandatory and can be empty ({} or "")
+3. Build basic structure of your command as it made in example
+```python
+class Pwd:
+    '''
+    Command "pwd" returns current directory
+    '''
+
+    def __init__(self) -> None: # im
+        ...
+
+    def pwd(self, long_flags: list[str], parameters: list[str]) -> str: # input is basic for all the commands
+        ...
+```
+4. Add services that you would like to use in your code:
+```python
+import logging
+import src.infrastructure.constants as constants # you can easily access basic vars through constants
+from src.services.help_call import Helper # all services are stored in src.services
+
+
+class Pwd:
+    '''
+    Command "pwd" returns current directory
+    '''
+
+    def __init__(self, helper: Helper) -> None: # add services you want
+        self._helper = helper # and add them here
+        self._logger = logging.getLogger(__name__)
+
+    def pwd(self, long_flags: list[str], parameters: list[str]) -> str: # input is basic for all the commands
+        ...
+```
+
+5. And now you can create whatever you want! After finishing your all you need to do is to save you file and on the next launch of the console it will appear. Here is the example of ready pwd command.
+```python
+import logging
+import src.infrastructure.constants as constants
+from src.services.help_call import Helper
+
+
+class Pwd:
+    '''
+    Command "pwd" returns current directory
+    '''
+
+    def __init__(self, helper: Helper) -> None:
+        self._helper = helper
+        self._logger = logging.getLogger(__name__)
+
+    def pwd(self, long_flags: list[str], parameters: list[str]) -> str:
+        self._logger.debug(
+            f"Running pwd with flags={long_flags}, parameters={parameters}")
+
+        # help call
+        if 'help' in long_flags:
+            return self._helper.call_help("pwd")
+
+        return constants.CURRENT_DIR
+
+
+COMMAND_INFO = {
+    "name": "pwd",
+    "function": lambda: Pwd(Helper()),
+    "entry-point": "pwd",
+    "flags": ["help"],
+    "aliases": {},
+    "description": "Returns current directory."
+}
+
+```

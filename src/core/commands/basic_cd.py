@@ -28,6 +28,7 @@ class Cd:
         if parameters == []:
             constants.CURRENT_DIR = constants.USER_HOME_DIR
 
+        output = []
         # otherwise it process given parameters. Yes it can switch folders several times. Why not?
         for parameter in parameters:
             # converting parameter to an absolute normalized path
@@ -36,16 +37,19 @@ class Cd:
 
             # raise a error if file is given
             if os.path.isfile(parameter):
-                raise SyntaxError(
+                self._logger.exception(
+                    f"Command can't switch to {parameter}. It's a file!")
+                output.append(
                     f"cd: You can't switch to {original_parameter}. It's a file!")
             # change directory if everything is right
             elif os.path.isdir(parameter):
                 constants.CURRENT_DIR = parameter
             # raise a error if path is incorrect
             else:
-                raise SyntaxError(
-                    f"cd: Path {original_parameter} doesn't exist!")
-        return ""
+                self._logger.exception(
+                    f"Path {parameter} doesn't exist.")
+                output.append(f"cd: Path {original_parameter} doesn't exist!")
+        return "\n".join(output)
 
 
 COMMAND_INFO = {
