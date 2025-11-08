@@ -1,57 +1,105 @@
-from pyfakefs.fake_filesystem_unittest import Patcher
-import os
 import src.infrastructure.constants as constants
-from pyfakefs.fake_filesystem import FakeFilesystem
 from src.shell.shell import Shell
+import pytest
 
 
-def test_ls_current_dir(fs: FakeFilesystem):
-    # creating base depending on the current os
-    if os.name == "nt":
-        base_directory = "C:\\"
-        fs.add_mount_point(base_directory)
-        print(fs.is_windows_fs)
-    else:
-        base_directory = "/"
+def test_ls_help(fs, setup_fake_environment, reload_ls_module):
+    # Call
+    shell = Shell()
+    result = shell.shell("ls --help")
 
-    # creating fake os base
-    home_directory = os.path.join(base_directory, "home", "fake_user")
-    current_directory = home_directory
-    logging_directory = os.path.join(base_directory, "logs")
-    print(home_directory)
+    # Required value
+    expected_help = """Command ls.
+List files in the given folder.
+Supports 3 flags:
+--all
+--long
+--help
+Supports 2 aliases
+-a -l"""
 
-    fs.create_dir(home_directory)
-    fs.create_dir(logging_directory)
+    # Comparison
+    assert result == expected_help
 
-    # replacing constants values
-    constants.USER_HOME_DIR = home_directory
-    constants.CURRENT_DIR = current_directory
-    constants.LOG_DIR = logging_directory
-    constants.USER_LOGIN = "fake_user"
 
-    # creating basic testing folders and files
-    fs.create_dir(f"{current_directory}/folder1")
-    fs.create_dir(f"{current_directory}/folder1/folder11")
-    fs.create_file(
-        f"{current_directory}/folder1/folder11/file11", contents="Text")
-    fs.create_file(f"{current_directory}/folder1/file1")
-    fs.create_file(f"{current_directory}/folder1/file2",
-                   contents="Some testing text")
-    fs.create_dir(f"{current_directory}/.folder2")
-    fs.create_dir(f"{current_directory}/.folder2/file2")
-    fs.create_dir(f"{current_directory}/folder3")
-
-    print(constants.CURRENT_DIR)
-    print(os.listdir("C:\\home\\fake_user"))
-
+def test_ls_current_dir(fs, setup_fake_environment, reload_ls_module):
+    # Call
     shell = Shell()
     result = shell.shell("ls")
+
+    # Comparison
     assert "folder1" in result
     assert "folder3" in result
+    assert ".folder2" not in result
 
 
-fs = FakeFilesystem()
-# или — более правильный способ:
-with Patcher() as patcher:
-    fs = patcher.fs
-    test_ls_current_dir(fs)
+def test_ls_folder(fs, setup_fake_environment, reload_ls_module):
+    # Call
+    shell = Shell()
+    result = shell.shell("ls folder1")
+
+    # Comparison
+    assert result == "folder11   file1   file2"
+
+
+def test_ls_all_flag(fs, setup_fake_environment, reload_ls_module):
+    # Call
+    shell = Shell()
+    result = shell.shell("ls --all")
+
+    # Comparison
+    assert "folder1" in result
+    assert "folder3" in result
+    assert ".folder2" in result
+
+
+def test_ls_long_flag(fs, setup_fake_environment, reload_ls_module):
+    # Call
+    shell = Shell()
+    result = shell.shell("ls --long")
+
+    assert "folder1" in result
+    lines = result.split("\n")
+    assert len(lines) > 1
+
+
+def test_ls_invalid_path_error(fs, setup_fake_environment, reload_ls_module):
+    # Call
+    shell = Shell()
+    result = shell.shell("ls nonexistent_folder")
+
+    # Comparison
+    assert result == "ls: Path nonexistent_folder is invalid!"
+
+
+def test_ls_file(fs, setup_fake_environment, reload_ls_module):
+    # Call
+    shell = Shell()
+    result = shell.shell("ls file42")
+
+    # Comparison
+    assert result == "ls: file42 can't be listed. It's a file!"
+
+
+def test_ls_invalid_flag_exception(fs, setup_fake_environment, reload_ls_module):
+    # Unknown flag
+    # Call
+    shell = Shell()
+    with pytest.raises(AttributeError) as exception:
+        shell.shell("ls -h")
+
+    # Comparison
+    assert "don't have flag" in str(exception.value)
+    assert exception.type is AttributeError
+
+
+def test_ls_invalid_command_exception():
+    # Tokenizer extra check
+    # Call
+    shell = Shell()
+    with pytest.raises(SyntaxError) as exception:
+        shell.shell("nonexistent_command")
+
+    # Comparison
+    assert str(
+        exception.value) == "Command must start with a command name. nonexistent_command is not a command!"

@@ -10,7 +10,7 @@ class Helper:
     def __init__(self) -> None:
         self._logger = logging.getLogger(__name__)
 
-    def call_help(self, command: str) -> list[str]:
+    def call_help(self, command: str) -> str:
         # It is better to add check for given name existence
         name = constants.REGISTRY[command]["name"]
         # It is better to check if elements are not empty, if they are empty it's better not to add them to the output

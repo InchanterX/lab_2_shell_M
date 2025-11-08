@@ -1,14 +1,109 @@
 import os
+import sys
 import pytest
 import importlib
 import src.infrastructure.constants as constants
 
+# Enabling pyfakefs pytest plugin
+pytest_plugins = ["pyfakefs"]
+
+
+def _gather_command_modules():
+    '''
+    Dynamically prepare list of modules from REGISTRY
+    '''
+    command_modules = {}
+
+    # Extra check to prevent exceptions
+    if not constants.REGISTRY:
+        importlib.reload(constants)
+
+    # importing all commands
+    command_names = list(constants.REGISTRY.keys())
+    for command_name in command_names:
+        commands_module_path = f"src.core.commands.{command_name}"
+        user_commands_module_path = f"src.core.user_commands.{command_name}"
+
+        # try to find command in basic commands
+        try:
+            importlib.import_module(commands_module_path)
+            module_path = commands_module_path
+        # otherwise import it from the users commands
+        except ImportError:
+            module_path = user_commands_module_path
+
+        command_modules[command_name] = module_path
+
+    return command_modules
+
+
+# Cache the command modules map
+is_module_was_imported = None
+
+
+def _get_command_modules():
+    '''Reload module if it is necessary'''
+    global is_module_was_imported
+
+    # Again extra check to prevent exceptions
+    if not constants.REGISTRY:
+        importlib.reload(constants)
+
+    if is_module_was_imported is None:
+        is_module_was_imported = _gather_command_modules()
+    return is_module_was_imported
+
+
+def _reload_command_module(command_name: str):
+    '''
+    Function that helps to reload command modules and registry not to loose them during testing.
+    '''
+    # Get all dynamic command modules
+    command_modules = _get_command_modules()
+
+    if command_name not in command_modules:
+        raise ValueError(
+            f"Unknown command: {command_name}."
+        )
+
+    module_path = command_modules[command_name]
+
+    # import/reload module
+    if module_path in sys.modules:
+        module = importlib.reload(sys.modules[module_path])
+    else:
+        module = importlib.import_module(module_path)
+
+    # reload registry
+    COMMAND_INFO = getattr(module, "COMMAND_INFO")
+    constants.REGISTRY[command_name] = COMMAND_INFO
+
+    return module
+
+
+@pytest.fixture
+def reload_ls_module():
+    '''Fixture to reloads basic_ls module.'''
+    return _reload_command_module("ls")
+
+
+@pytest.fixture
+def reload_cd_module():
+    '''Fixture to reloads basic_cd module.'''
+    return _reload_command_module("cd")
+
+
+@pytest.fixture
+def reload_cat_module():
+    '''Fixture to reloads basic_cat module.'''
+    return _reload_command_module("cat")
+
 
 @pytest.fixture
 def setup_fake_environment(fs):
-    '''
+    """
     Automatically setup fake environment by editing constants and creating files and folders for tests.
-    '''
+    """
 
     # creating base depending on the current os
     if os.name == "nt":
@@ -42,11 +137,5 @@ def setup_fake_environment(fs):
     fs.create_dir(f"{current_directory}/.folder2")
     fs.create_dir(f"{current_directory}/.folder2/file2")
     fs.create_dir(f"{current_directory}/folder3")
-
-    print(constants.CURRENT_DIR)
-    print(os.listdir(current_directory))
-
-    # # project modules reload
-    # importlib.reload(constants)
-    # importlib.invalidate_caches()
+    fs.create_file(f"{current_directory}/file42")
     yield

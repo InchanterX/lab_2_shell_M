@@ -48,7 +48,7 @@ class Mv:
         output = self._move(parameters[:-1], folder_path)
         return "\n".join(output)
 
-    def _rename(self, primary_file: str, new_file: str) -> list[str]:
+    def _rename(self, primary_file: str, new_file: str) -> str:
         '''
         Function that renames files.
         Used for cases when two files were given and there is no other parameters.
@@ -64,12 +64,12 @@ class Mv:
         if not os.path.exists(primary_file):
             self._logger.error(f"Path {primary_file} is invalid.")
             output.append(f"mv: {original_primary_file} doesn't exist!")
-            return output
+            return "\n".join(output)
 
         # moving
         shutil.move(primary_file, new_file)
         self._logger.info(f"Renamed {primary_file} to {new_file}")
-        return output
+        return "\n".join(output)
 
     def _move(self, files: list[str], folder: str) -> list:
         '''

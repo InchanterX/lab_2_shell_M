@@ -218,3 +218,6 @@ COMMAND_INFO = {
 }
 
 ```
+
+## Making tests for user's commands
+If I won't forget I will add a guide for it. It is pretty easy with all the trash that I wrote in conftest.
