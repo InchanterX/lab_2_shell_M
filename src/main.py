@@ -37,11 +37,10 @@ def main() -> None:
                 logger.exception(
                     f"Command failed to execute with a error: {e}")
                 print("An unexpected os error occurred. Check log file for information.")
-            # return error if it occurred in the program in a pretty way
-            except Exception as e:
-                print(e)
     except KeyboardInterrupt:
         print("Exiting the console.")
+    except Exception as e:
+        print(e)
 
 
 if __name__ == "__main__":

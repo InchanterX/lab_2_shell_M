@@ -22,7 +22,7 @@ class Zip:
 
         # help call
         if 'help' in long_flags:
-            return self._helper.call_help("archive")
+            return self._helper.call_help("zip")
 
         # no parameters were given
         if parameters == []:
@@ -71,5 +71,5 @@ COMMAND_INFO = {
     "entry-point": "zip",
     "flags": ["help"],
     "aliases": {},
-    "description": "Display file content."
+    "description": "Zip given files."
 }
