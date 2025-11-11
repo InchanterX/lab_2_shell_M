@@ -41,8 +41,8 @@ class Cp:
             recursive = 1
 
         # target folder processing
-        original_folder_path = parameters[-1]
-        folder_path = Normalizer().normalize(parameters[-1])
+        original_folder_path, folder_path = Normalizer(
+        ).normalize(parameters[-1])
         if not os.path.isdir(folder_path):
             self._logger.error(f"Incorrect folder path {folder_path}.")
             raise SyntaxError(

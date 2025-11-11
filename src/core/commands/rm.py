@@ -124,7 +124,7 @@ COMMAND_INFO = {
     "name": "rm",
     "function": lambda: Rm(Normalizer(), Helper()),
     "entry-point": "rm",
-    "flags": ["recursive", "force" "help"],
+    "flags": ["recursive", "force", "help"],
     "aliases": {"r": "recursive", "f": "force"},
     "description": "Copy files to a different folder."
 }

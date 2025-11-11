@@ -62,9 +62,7 @@ def _reload_command_module(command_name: str):
     command_modules = _get_command_modules()
 
     if command_name not in command_modules:
-        raise ValueError(
-            f"Unknown command: {command_name}."
-        )
+        raise ValueError(f"Unknown command: {command_name}.")
 
     module_path = command_modules[command_name]
 
@@ -89,21 +87,27 @@ def reload_ls_module():
 
 @pytest.fixture
 def reload_cd_module():
-    '''Fixture to reloads basic_cd module.'''
+    '''Fixture to reloads cd module.'''
     return _reload_command_module("cd")
 
 
 @pytest.fixture
 def reload_cat_module():
-    '''Fixture to reloads basic_cat module.'''
+    '''Fixture to reloads cat module.'''
     return _reload_command_module("cat")
 
 
 @pytest.fixture
+def reload_cp_module():
+    '''Fixture to reloads cp module.'''
+    return _reload_command_module("cp")
+
+
+@pytest.fixture
 def setup_fake_environment(fs):
-    """
+    '''
     Automatically setup fake environment by editing constants and creating files and folders for tests.
-    """
+    '''
 
     # creating base depending on the current os
     if os.name == "nt":
@@ -137,5 +141,18 @@ def setup_fake_environment(fs):
     fs.create_dir(f"{current_directory}/.folder2")
     fs.create_dir(f"{current_directory}/.folder2/file2")
     fs.create_dir(f"{current_directory}/folder3")
-    fs.create_file(f"{current_directory}/file42")
+    fs.create_file(f"{current_directory}/file42", contents="Test_information.")
+    fs.create_file(
+        f"{current_directory}/binary_file.bin", contents=b"\x80\x81\x82\x83\xff\xfe\xfd"
+    )
+    fs.create_file(
+        f"{current_directory}/restricted_file.txt", contents="Restricted content"
+    )
+    fs.chmod(f"{current_directory}/restricted_file.txt", 0o000)
+    fs.create_dir(
+        f"{current_directory}/restricted_folder"
+    )
+    fs.create_file(f"{current_directory}/restricted_folder/file23.pdf")
+    fs.chmod(f"{current_directory}/restricted_folder", 0o000)
+
     yield

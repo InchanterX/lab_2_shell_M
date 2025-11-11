@@ -65,9 +65,9 @@ class Ls:
                 # if program failed to process file it is unaccessible
                 except PermissionError:
                     self._logger.exception(
-                        f"There is no permissions to delete {parameter}.")
+                        f"There is no permissions to list {parameter}.")
                     output.append(
-                        f"ls: cannot delete {original_parameter}. Permission denied.")
+                        f"ls: cannot list {original_parameter}. Permission denied.")
 
         # process flag --all if it was given
         if 'all' not in long_flags:
