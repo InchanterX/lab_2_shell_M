@@ -1,4 +1,4 @@
-import src.infrastructure.constants as constants
+import os
 from src.shell.shell import Shell
 from unittest.mock import patch
 import pytest
@@ -107,17 +107,17 @@ def test_ls_invalid_command_exception():
         exception.value) == "Command must start with a command name. nonexistent_command is not a command!"
 
 
-# def test_ls_permission_error():
-#     # Call
-#     shell = Shell()
+def test_ls_permission_error(fs, setup_fake_environment, reload_ls_module):
+    # Call
+    shell = Shell()
 
-#     def mock_listdir(file_path):
-#         if "restricted_folder" in str(file_path):
-#             raise PermissionError("Permission denied")
-#         return ["file23.pdf"]
+    def mock_listdir(file_path):
+        if "restricted_folder" in str(file_path):
+            raise PermissionError("Permission denied")
+        return os.listdir(file_path)
 
-#     with patch("src.core.commands.ls", side_effect=mock_listdir):
-#         result = shell.shell("ls restricted_folder")
+    with patch("os.listdir", side_effect=mock_listdir):
+        result = shell.shell("ls restricted_folder")
 
-#     # Comparison
-#     assert result == "ls: cannot list restricted_folder. Permission denied."
+    # Comparison
+    assert result == "ls: cannot list restricted_folder. Permission denied."

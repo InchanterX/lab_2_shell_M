@@ -2,6 +2,8 @@ import os
 import sys
 import pytest
 import importlib
+import tarfile
+import zipfile
 import src.infrastructure.constants as constants
 
 # Enabling pyfakefs pytest plugin
@@ -104,6 +106,54 @@ def reload_cp_module():
 
 
 @pytest.fixture
+def reload_mv_module():
+    '''Fixture to reloads mv module.'''
+    return _reload_command_module("mv")
+
+
+@pytest.fixture
+def reload_rm_module():
+    '''Fixture to reloads rm module.'''
+    return _reload_command_module("rm")
+
+
+@pytest.fixture
+def reload_tar_module():
+    '''Fixture to reloads tar module.'''
+    return _reload_command_module("tar")
+
+
+@pytest.fixture
+def reload_untar_module():
+    '''Fixture to reloads untar module.'''
+    return _reload_command_module("untar")
+
+
+@pytest.fixture
+def reload_zip_module():
+    '''Fixture to reloads zip module.'''
+    return _reload_command_module("zip")
+
+
+@pytest.fixture
+def reload_unzip_module():
+    '''Fixture to reloads unzip module.'''
+    return _reload_command_module("unzip")
+
+
+@pytest.fixture
+def reload_example_module():
+    '''Fixture to reload example module.'''
+    return _reload_command_module("example")
+
+
+@pytest.fixture
+def reload_pwd_module():
+    '''Fixture to reload pwd module.'''
+    return _reload_command_module("pwd")
+
+
+@pytest.fixture
 def setup_fake_environment(fs):
     '''
     Automatically setup fake environment by editing constants and creating files and folders for tests.
@@ -142,9 +192,13 @@ def setup_fake_environment(fs):
     fs.create_dir(f"{current_directory}/.folder2/file2")
     fs.create_dir(f"{current_directory}/folder3")
     fs.create_file(f"{current_directory}/file42", contents="Test_information.")
+
+    # Creating binary file
     fs.create_file(
         f"{current_directory}/binary_file.bin", contents=b"\x80\x81\x82\x83\xff\xfe\xfd"
     )
+
+    # Creating files with changed permissions
     fs.create_file(
         f"{current_directory}/restricted_file.txt", contents="Restricted content"
     )
@@ -154,5 +208,30 @@ def setup_fake_environment(fs):
     )
     fs.create_file(f"{current_directory}/restricted_folder/file23.pdf")
     fs.chmod(f"{current_directory}/restricted_folder", 0o000)
+
+    # Creating folders for coping|moving|removing tests
+    fs.create_dir(f"{current_directory}/empty_folder")
+    fs.create_dir(f"{current_directory}/test_folder")
+    fs.create_file(
+        f"{current_directory}/test_folder/test_file", contents="test")
+    fs.create_dir(f"{current_directory}/test_folder2")
+    fs.create_file(
+        f"{current_directory}/test_folder2/test_file", contents="test")
+    fs.create_dir(f"{current_directory}/test_folder3")
+    fs.create_file(
+        f"{current_directory}/test_folder3/test_file", contents="test")
+    fs.create_dir(f"{current_directory}/test_folder4")
+    fs.create_file(
+        f"{current_directory}/test_folder4/test_file", contents="test")
+    fs.create_file(f"{current_directory}/restricted_file.tar.gz",
+                   contents="test content")
+    fs.create_file(f"{current_directory}/restricted_file.zip",
+                   contents="test content")
+
+    # Create archives for zip and tar tests
+    with tarfile.open(f"{current_directory}/archive.tar.gz", "w:gz") as tar:
+        tar.add(f"{current_directory}/file42", arcname="file42")
+    with zipfile.ZipFile(f"{current_directory}/archive.zip", "w") as zip_file:
+        zip_file.write(f"{current_directory}/file42", arcname="file42")
 
     yield

@@ -220,4 +220,45 @@ COMMAND_INFO = {
 ```
 
 ## Making tests for user's commands
-If I won't forget I will add a guide for it. It is pretty easy with all the trash that I wrote in conftest.
+If you are really despaired about making tests for your own commands, you can also do it quite easy by following this steps:
+1. You need to define your command for testing in "tests/conftest.py" file by adding a fixture, adding the name of you command that you put to the parameter "name" in the command config.
+```python
+@pytest.fixture
+def reload_NAME_module():
+    '''Fixture to reload NAME module.'''
+    return _reload_command_module("NAME")
+```
+2. Create a file for your tests in folder "tests/"
+3. That's it. You can write your tests: import libraries that you need, use prepared fake system from conftest to work with files.
+```python
+# importing all the things you need
+# there is no need to import conftest
+from src.shell.shell import Shell
+import src.infrastructure.constants as constants
+
+# test for help call
+def test_pwd_help(fs, setup_fake_environment, reload_pwd_module):
+    # Call
+    shell = Shell()
+    result = shell.shell("pwd --help")
+
+    # Required value
+    expected_help = """Command pwd.
+Returns current directory.
+Supports 1 flags:
+--help
+Supports 0 aliases
+"""
+
+    # Comparison
+    assert result == expected_help
+
+# test for commands' basic functional
+def test_pwd_basic_output(fs, setup_fake_environment, reload_pwd_module):
+    # Call
+    shell = Shell()
+    result = shell.shell("pwd")
+
+    # Comparison
+    assert result == constants.CURRENT_DIR
+```

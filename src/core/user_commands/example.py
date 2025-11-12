@@ -14,9 +14,9 @@ class Example:
 
 COMMAND_INFO = {
     "name": "example",
-    "function": Example,
+    "function": lambda: Example(),
     "entry-point": "example",
-    "flags": ["long", "all"],
+    "flags": ["help"],
     "aliases": {},
     "description": "Do nothing."
 }
