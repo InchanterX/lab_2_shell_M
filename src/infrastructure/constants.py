@@ -8,6 +8,8 @@ USER_LOGIN = os.getlogin()
 CURRENT_DIR = USER_HOME_DIR
 LOG_DIR = os.path.join(os.path.dirname(
     os.path.abspath(__file__)), "../../.shell_log")
+HISTORY_PATH = os.path.join(os.path.dirname(
+    os.path.abspath(__file__)), "../../.history")
 
 # Modules data
 SUCCESS, REGISTRY = Registry().registration()
