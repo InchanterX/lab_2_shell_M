@@ -36,9 +36,7 @@ class Cp:
             raise SyntaxError("cp: Not enough parameters were given.")
 
         # processing flags
-        recursive = 0
-        if 'recursive' in long_flags:
-            recursive = 1
+        recursive = 'recursive' in long_flags
 
         # target folder processing
         original_folder_path, folder_path = self._normalize.normalize(
@@ -62,7 +60,8 @@ class Cp:
                         folder_path, os.path.basename(file_path)))
                     self._logger.debug(
                         f"Copied file {file_path} to {folder_path}.")
-                    output.append(f"Copied file {original_file_path} to {original_folder_path}.")
+                    output.append(
+                        f"Copied file {original_file_path} to {original_folder_path}.")
                 except Exception as e:
                     self._logger.exception(f"Failed to copy {file_path}: {e}")
                     output.append(f"cp: failed to copy {original_file_path}.")
@@ -70,7 +69,7 @@ class Cp:
             # folder was given
             elif os.path.isdir(file_path):
                 # check for recursive flag
-                if recursive == 0:
+                if not recursive:
                     self._logger.warning(
                         f"Failed to copy folder {file_path}. Flag --recursive was not given.")
                     output.append(
@@ -82,7 +81,8 @@ class Cp:
                             folder_path, os.path.basename(file_path)), dirs_exist_ok=True)
                         self._logger.debug(
                             f"Copied folder {file_path} to {folder_path}.")
-                        output.append(f"Copied folder {original_file_path} to {original_folder_path}.")
+                        output.append(
+                            f"Copied folder {original_file_path} to {original_folder_path}.")
                     # catch unexpected copying exceptions
                     except Exception as e:
                         self._logger.exception(

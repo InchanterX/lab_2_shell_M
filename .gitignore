@@ -396,3 +396,6 @@ cython_debug/
 
 # History file
 .history
+
+# Trash folder
+.trash

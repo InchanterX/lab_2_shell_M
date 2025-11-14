@@ -7,7 +7,7 @@ import os
 # import src.utils.constants
 
 
-class grep:
+class Grep:
     '''
     Command "grep" get regular expression and paths from the command
     and search by this regular expression in following files.
@@ -144,7 +144,7 @@ class grep:
 
 COMMAND_INFO = {
     "name": "grep",
-    "function": lambda: grep(Normalizer(), Helper()),
+    "function": lambda: Grep(Normalizer(), Helper()),
     "entry-point": "grep",
     "flags": ["recursive", "ignore_case", "help"],
     "aliases": {"r": "recursive", "i": "ignore_case"},

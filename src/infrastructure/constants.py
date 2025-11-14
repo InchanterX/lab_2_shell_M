@@ -10,6 +10,8 @@ LOG_DIR = os.path.join(os.path.dirname(
     os.path.abspath(__file__)), "../../.shell_log")
 HISTORY_PATH = os.path.join(os.path.dirname(
     os.path.abspath(__file__)), "../../.history")
+TRASH_DIR = os.path.join(os.path.dirname(
+    os.path.abspath(__file__)), "../../.trash")
 
 # Modules data
 SUCCESS, REGISTRY = Registry().registration()

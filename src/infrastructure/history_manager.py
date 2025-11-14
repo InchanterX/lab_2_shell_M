@@ -6,7 +6,8 @@ import src.infrastructure.constants as constants
 
 class HistoryManager:
     '''
-
+    "HistoryManager" manage commands history by saving them a separated JSON file.
+    It separately stores if command can be undone or not and provide possibility to find last command that can be undone with O(1).
     '''
 
     def __init__(self) -> None:
@@ -48,6 +49,9 @@ class HistoryManager:
         self._write_history(history)
 
     def get_last_reversible(self) -> dict | None:
+        '''
+        Return last command that can be undone. Or None if there is no commands to undone.
+        '''
         history = self._read_history()
         last_id = history["meta"]["last_reversible_id"]
         if last_id == 0:
@@ -58,7 +62,10 @@ class HistoryManager:
                 return line
         return None
 
-    def mark_undone(self, id: int):
+    def mark_undone(self, id: int) -> None:
+        '''
+        Mark a command as undone.
+        '''
         history = self._read_history()
         for line in history["records"]:
             if line["id"] == id:
@@ -67,5 +74,10 @@ class HistoryManager:
         self._write_history(history)
 
     def get_history_part(self, n: int = 10) -> list[dict]:
+        '''
+        Returns last N elements of history.
+        Or all elements if N is bigger than history size.
+        '''
         history = self._read_history()
-        return history["records"][-n:]
+        records = history["records"]
+        return records[-n:] if len(records) > n else records

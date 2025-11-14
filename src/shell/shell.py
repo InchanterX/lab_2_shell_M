@@ -1,7 +1,7 @@
 from src.infrastructure.tokenizer import Tokenizer
 from src.infrastructure.applicator import Applicator
 from src.infrastructure.history_manager import HistoryManager
-# from src.infrastructure.trash_manager import TrashManager
+from src.infrastructure.trash_manager import TrashManager
 import logging
 
 
@@ -12,7 +12,7 @@ class Shell:
 
     def __init__(self):
         self._history = HistoryManager()
-        # self._trash = TrashManager()
+        self._trash = TrashManager()
         self._logger = logging.getLogger(__name__)
 
     def shell(self, command: str) -> str:
@@ -23,13 +23,25 @@ class Shell:
         flags = applicator.long_flags
         parameters = applicator.parameters
 
-        result = Applicator(tokens).application()
-
+        # Check if command can be undone a create a backup in .trash for it
         reversible = command_name in ("mv", "rm", "cp")
         backup_path = None
-        # if reversible:
-        #     backup_path = self._trash.create_backup(parameters)
 
-        self._history.record_command(command_name=command_name, flags=flags,
-                                     parameters=parameters, reversible=reversible, backup_path=backup_path)
+        if reversible:
+            history = self._history._read_history()
+            next_id = len(history["records"]) + 1
+            backup_path = self._trash.create_backup(
+                next_id, command_name, parameters)
+
+        # Execute command
+        result = Applicator(tokens).application()
+
+        # Record command to the .history
+        self._history.record_command(
+            command_name=command_name,
+            flags=flags,
+            parameters=parameters,
+            reversible=reversible,
+            backup_path=backup_path
+        )
         return result

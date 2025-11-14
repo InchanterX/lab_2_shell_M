@@ -154,6 +154,24 @@ def reload_pwd_module():
 
 
 @pytest.fixture
+def reload_grep_module():
+    '''Fixture to reload grep module.'''
+    return _reload_command_module("grep")
+
+
+@pytest.fixture
+def reload_history_module():
+    '''Fixture to reload history module.'''
+    return _reload_command_module("history")
+
+
+@pytest.fixture
+def reload_undo_module():
+    '''Fixture to reload undo module.'''
+    return _reload_command_module("undo")
+
+
+@pytest.fixture
 def setup_fake_environment(fs):
     '''
     Automatically setup fake environment by editing constants and creating files and folders for tests.
