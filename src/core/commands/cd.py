@@ -7,7 +7,7 @@ import logging
 
 class Cd:
     '''
-    Command "cd" change current directory.
+    Command "cd" changes current directory.
     It get flags and parameters and change the constant variable CURRENT_PATH.
     '''
 

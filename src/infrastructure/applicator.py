@@ -2,6 +2,10 @@ import src.infrastructure.constants as constants
 
 
 class Applicator:
+    '''
+    Get tokens and classes and functions from REGISTRY and apply processed tokens to a demanded command.
+    Get result of the command work and returns it's output.
+    '''
 
     def __init__(self, tokens) -> None:
 

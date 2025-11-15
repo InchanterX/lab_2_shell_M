@@ -8,7 +8,7 @@ class Cat:
     '''
     Command "cat" takes lists of flags and parameters.
     If given paths in parameters are valid, command displays their content.
-    Otherwise it return corresponding error.
+    Otherwise it returns corresponding error.
     '''
 
     def __init__(self, normalizer: Normalizer, helper: Helper) -> None:

@@ -47,5 +47,5 @@ UNKNOWN_RE = "(?P<UNKNOWN>.)"
 ALL_EXPRESSIONS = [COMMANDS_RE, LONG_FLAGS_RE, SHORT_FLAGS_RE,
                    QUOTED_PARAMETERS_RE, UNQUOTED_PARAMETERS_RE, SPACE_RE, UNKNOWN_RE]
 
-# Master regular expression to gather all in one
+# Master regular expression to gather all together
 MASTER_RE = re.compile('|'.join(ALL_EXPRESSIONS))

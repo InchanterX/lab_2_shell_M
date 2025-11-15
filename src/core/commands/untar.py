@@ -1,14 +1,13 @@
 import os
 import tarfile
 import logging
-import src.infrastructure.constants as constants
 from src.services.help_call import Helper
 from src.services.path_normalizer import Normalizer
 
 
 class Untar:
     '''
-    "Untar"
+    "Untar" tar.gz archives.
     '''
 
     def __init__(self, normalizer: Normalizer, helper: Helper) -> None:

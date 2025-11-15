@@ -1,14 +1,13 @@
 import os
 import zipfile
 import logging
-import src.infrastructure.constants as constants
 from src.services.help_call import Helper
 from src.services.path_normalizer import Normalizer
 
 
 class Unzip:
     '''
-    "Unzip"
+    "Unzip" unzips zip archives.
     '''
 
     def __init__(self, normalizer: Normalizer, helper: Helper) -> None:

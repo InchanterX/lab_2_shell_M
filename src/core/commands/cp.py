@@ -9,7 +9,7 @@ class Cp:
     '''
     Command "cp" takes lists of flags (--help, --recursive or -r) and parameters (>=1 file|folder for copy, 1 target folder).
     If given paths are valid, it copy files.
-    Otherwise it return an exception.
+    Otherwise it returns an exception.
     '''
 
     def __init__(self, normalizer: Normalizer, helper: Helper) -> None:

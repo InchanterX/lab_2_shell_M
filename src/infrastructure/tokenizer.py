@@ -18,7 +18,7 @@ class Command_Token:
 
 class Tokenizer:
     '''
-    Group the result of regular expression work to the list of elements,
+    Groups the result of regular expression work to the list of elements,
     that builds according to the dataclass.
     Process it elements by excluding spaces and checking for unexpected values
     '''

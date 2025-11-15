@@ -6,7 +6,7 @@ import src.infrastructure.constants as constants
 
 class HistoryManager:
     '''
-    "HistoryManager" manage commands history by saving them a separated JSON file.
+    "HistoryManager" manages commands history by saving them a separated JSON file.
     It separately stores if command can be undone or not and provide possibility to find last command that can be undone with O(1).
     '''
 

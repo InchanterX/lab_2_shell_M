@@ -63,17 +63,20 @@ It's a Shell level M project with a terminal that dynamically load all given com
 </pre>
 
 # Set up
-To use calculator you need to download it. Then you can run it from the project root with your terminal with:
+To use this "shell" you need to download it. Then you can run it from the project root with your terminal with:
 ```
 python -m src.main
 ```
+
+## Tests
+To ran tests you need to have pytest, pytest-pyfakefs, pytest-cov.
 To activate tests use:
 ```
 python -m pytest
 ```
 
 # How it works?
-Program is split in 2 logical parts: console and commands.
+Program is cross-platform (works on Windows|UNIX) is split in 2 logical parts: console and commands.
 - Console runs CLI, process all the commands that exists and processes users input.
 - Commands are stored in a separate folders and also split by 2 parts: initial commands (standard pack) and commands made by users.
 
@@ -149,8 +152,9 @@ Users of the console can do their own commands and easily add them to the other 
 In folder src/core/user_commands you can find an example of user's command and write your own the same way.
 
 ## Small guide about making pwd by your own
-1. First of all, ypu need to make a python file with a name you like. For pwd it will be "pwd.py".
-2. Then you need to make this file a command in from the point of view of the console by adding a configuration variable.
+1. First of all, you need to make a python file with a name you like. For pwd it will be "pwd.py".
+2. Then you need to make this file a command at point of view of the console by adding a configuration variable.
+Fields of flags, aliases and descriptions are not mandatory and can be empty ({} or "")
 ```python
 COMMAND_INFO = {
     "name": "pwd", # command name
@@ -161,7 +165,6 @@ COMMAND_INFO = {
     "description": "Returns current directory." # Just a description
 }
 ```
-Fields of flags, aliases and descriptions are not mandatory and can be empty ({} or "")
 3. Build basic structure of your command as it made in example
 ```python
 class Pwd:
@@ -195,7 +198,7 @@ class Pwd:
         ...
 ```
 
-5. And now you can create whatever you want! After finishing your all you need to do is to save you file and on the next launch of the console it will appear. Here is the example of ready pwd command.
+1. And now you can create whatever you want! After finishing all you need to do is to save your file and on the next launch of the console it will appear. Here is the example of ready pwd command.
 ```python
 import logging
 import src.infrastructure.constants as constants

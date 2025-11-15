@@ -7,7 +7,7 @@ import logging
 
 class Registry:
     '''
-    Registry create a registry of all available commands by searching validly written files in src/core folder.
+    Registry creates a registry of all available commands by searching validly written files in src/core folder.
     If file contains basic structure, especially it contains configuration variable - it is valid and will be to registry.
     Returns tuple with all the commands and information about them.
     '''

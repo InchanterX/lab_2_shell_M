@@ -6,7 +6,7 @@ from src.infrastructure.trash_manager import TrashManager
 
 class Undo:
     '''
-    "undo" undo the last reversible command: rm, mv, or cp, using history and trash managers.
+    "undo" undoes the last reversible command: rm, mv, or cp, using .history and trash managers.
     '''
 
     def __init__(self, helper: Helper, history_manager: HistoryManager, trash_manager: TrashManager) -> None:

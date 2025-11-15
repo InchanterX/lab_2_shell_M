@@ -7,7 +7,7 @@ import logging
 
 class Shell:
     '''
-    Gather all the parts of the console and unite them from simpler usage in the future.
+    Gathers all the parts of the console and unite them from simpler usage in the future.
     '''
 
     def __init__(self):

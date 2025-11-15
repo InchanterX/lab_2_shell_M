@@ -8,7 +8,7 @@ from src.services.help_call import Helper
 class Mv:
     '''
     Command "mv" move files to the specified place.
-    If only to files were given and they are adjacent in their positioning - file will be just replaced.
+    If only two files were given and they are adjacent in their positioning - file will be just replaced.
     If more files were given and everything is valid they will be moved to a given folder.
     '''
 

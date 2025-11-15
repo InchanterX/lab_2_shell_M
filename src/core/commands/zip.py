@@ -8,7 +8,7 @@ from src.services.path_normalizer import Normalizer
 
 class Zip:
     """
-    "Zip"
+    "Zip" files and folders to a zip archive.
     """
 
     def __init__(self, normalizer: Normalizer, helper: Helper) -> None:

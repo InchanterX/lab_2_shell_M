@@ -5,7 +5,7 @@ from src.infrastructure.history_manager import HistoryManager
 
 class History:
     '''
-    "History returns last N elements of .history. Returns 10 by default."
+    "History returns last N elements of .history/history.json. Returns 10 by default."
     '''
 
     def __init__(self, helper: Helper, history_manager: HistoryManager) -> None:

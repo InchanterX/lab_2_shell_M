@@ -38,7 +38,8 @@ def test_unzip_unpack_the_archive(fs, setup_fake_environment, reload_unzip_modul
     # Prepare
     archive_path = os.path.join(constants.CURRENT_DIR, "test_archive.zip")
     with zipfile.ZipFile(archive_path, "w") as zip_file:
-        zip_file.write(os.path.join(constants.CURRENT_DIR, "file42"), arcname="file42")
+        zip_file.write(os.path.join(
+            constants.CURRENT_DIR, "file42"), arcname="file42")
 
     # Call
     shell = Shell()
@@ -52,10 +53,12 @@ def test_unzip_unpack_multiple_archives(fs, setup_fake_environment, reload_unzip
     # Prepare
     archive1_path = os.path.join(constants.CURRENT_DIR, "test_archive1.zip")
     with zipfile.ZipFile(archive1_path, "w") as zip_file:
-        zip_file.write(os.path.join(constants.CURRENT_DIR, "file42"), arcname="file42")
+        zip_file.write(os.path.join(
+            constants.CURRENT_DIR, "file42"), arcname="file42")
     archive2_path = os.path.join(constants.CURRENT_DIR, "test_archive2.zip")
     with zipfile.ZipFile(archive2_path, "w") as zip_file:
-        zip_file.write(os.path.join(constants.CURRENT_DIR, "file42"), arcname="file42")
+        zip_file.write(os.path.join(
+            constants.CURRENT_DIR, "file42"), arcname="file42")
 
     # Call
     shell = Shell()
@@ -76,9 +79,11 @@ def test_unzip_nonexistent_archive_error(fs, setup_fake_environment, reload_unzi
 
 def test_unzip_unaccessible_archive_error(fs, setup_fake_environment, reload_unzip_module):
     # Prepare
-    archive_path = os.path.join(constants.CURRENT_DIR, "restricted_archive.zip")
+    archive_path = os.path.join(
+        constants.CURRENT_DIR, "restricted_archive.zip")
     with zipfile.ZipFile(archive_path, "w") as zip_file:
-        zip_file.write(os.path.join(constants.CURRENT_DIR, "file42"), arcname="file42")
+        zip_file.write(os.path.join(
+            constants.CURRENT_DIR, "file42"), arcname="file42")
 
     # Call
     shell = Shell()
@@ -106,9 +111,11 @@ def test_unzip_archive_is_not_an_archive_error(fs, setup_fake_environment, reloa
 
 def test_unzip_os_error(fs, setup_fake_environment, reload_unzip_module):
     # Prepare
-    archive_path = os.path.join(constants.CURRENT_DIR, "test_archive_error.zip")
+    archive_path = os.path.join(
+        constants.CURRENT_DIR, "test_archive_error.zip")
     with zipfile.ZipFile(archive_path, "w") as zip_file:
-        zip_file.write(os.path.join(constants.CURRENT_DIR, "file42"), arcname="file42")
+        zip_file.write(os.path.join(
+            constants.CURRENT_DIR, "file42"), arcname="file42")
 
     # Call
     shell = Shell()

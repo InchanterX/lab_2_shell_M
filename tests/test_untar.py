@@ -76,7 +76,8 @@ def test_untar_nonexistent_archive_error(fs, setup_fake_environment, reload_unta
 
 def test_untar_unaccessible_archive_error(fs, setup_fake_environment, reload_untar_module):
     # Prepare
-    archive_path = os.path.join(constants.CURRENT_DIR, "restricted_archive.tar.gz")
+    archive_path = os.path.join(
+        constants.CURRENT_DIR, "restricted_archive.tar.gz")
     with tarfile.open(archive_path, "w:gz") as tar:
         tar.add(os.path.join(constants.CURRENT_DIR, "file42"), arcname="file42")
 
@@ -106,7 +107,8 @@ def test_untar_archive_is_not_an_archive_error(fs, setup_fake_environment, reloa
 
 def test_untar_os_error(fs, setup_fake_environment, reload_untar_module):
     # Prepare
-    archive_path = os.path.join(constants.CURRENT_DIR, "test_archive_error.tar.gz")
+    archive_path = os.path.join(
+        constants.CURRENT_DIR, "test_archive_error.tar.gz")
     with tarfile.open(archive_path, "w:gz") as tar:
         tar.add(os.path.join(constants.CURRENT_DIR, "file42"), arcname="file42")
 

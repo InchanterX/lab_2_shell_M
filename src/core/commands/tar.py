@@ -8,7 +8,7 @@ from src.services.path_normalizer import Normalizer
 
 class Tar:
     """
-    "Tar"
+    "Tar" command work with tar format of files. Make tar archives with .tar.gz extension.
     """
 
     def __init__(self, normalizer: Normalizer, helper: Helper) -> None:

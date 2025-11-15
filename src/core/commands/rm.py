@@ -8,7 +8,7 @@ from src.services.help_call import Helper
 class Rm:
     '''
     Command "rm" takes lists of flags (--help, --recursive, --force or -r, -f) and parameters (>=1 file|folder paths) for deleting.
-    Delete files if everything is write. Raise an exception in case of a error.
+    Delete files if everything is right. Raise an exception in case of a error.
     Delete folders and all their content if there is [-r|--recursive] flag.
     If several parameters are given without --force will ask user's consent.
     '''

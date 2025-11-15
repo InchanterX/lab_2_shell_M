@@ -9,7 +9,7 @@ from src.services.help_call import Helper
 
 class Ls:
     '''
-    Command "ls" get parameters and flags and return lists of files in the directories from the parameters.
+    Command "ls" gets parameters and flags and return lists of files in the directories from the parameters.
     It takes unlimited amount of parameters with paths and return their files independently.
     Command supports flags "all", "long" and "help". "All" shows all the files in the folder, even hidden (with dot).
     "Long" extend information about every file and information. "Help" return help.

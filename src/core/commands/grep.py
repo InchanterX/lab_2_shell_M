@@ -9,8 +9,8 @@ import os
 
 class Grep:
     '''
-    Command "grep" get regular expression and paths from the command
-    and search by this regular expression in following files.
+    Command "grep" gets regular expression and paths from the command
+    and searches by this regular expression in following files.
     Supports flag -r for recursive search and -i for registry independent search.
     '''
 
