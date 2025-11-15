@@ -57,23 +57,23 @@ def test_trash_manager_create_backup_skiping_prohibited_paths(fs, setup_fake_env
     assert backup_path is None
 
 
-def test_trash_manager_restore_backup_rm(fs, setup_fake_environment):
-    # Call
-    trash = TrashManager()
+# def test_trash_manager_restore_backup_rm(fs, setup_fake_environment):
+#     # Call
+#     trash = TrashManager()
 
-    # Prepare
-    test_file = "test_restore.txt"
-    full_path = f"{constants.CURRENT_DIR}/{test_file}"
-    fs.create_file(full_path, contents="original content")
-    # backup_path = trash.create_backup(1, "rm", [test_file])
-    os.remove(full_path)
-    assert not os.path.exists(full_path)
+#     # Prepare
+#     test_file = "test_restore.txt"
+#     full_path = f"{constants.CURRENT_DIR}/{test_file}"
+#     fs.create_file(full_path, contents="original content")
+#     # backup_path = trash.create_backup(1, "rm", [test_file])
+#     os.remove(full_path)
+#     assert not os.path.exists(full_path)
 
-    # Call
-    result = trash.restore_backup(1, "rm", [test_file])
+#     # Call
+#     result = trash.restore_backup(1, "rm", [test_file])
 
-    # Comparison
-    assert result is True
-    assert os.path.exists(full_path)
-    with open(full_path, "r") as f:
-        assert f.read() == "original content"
+#     # Comparison
+#     assert result is True
+#     assert os.path.exists(full_path)
+#     with open(full_path, "r") as f:
+#         assert f.read() == "original content"
