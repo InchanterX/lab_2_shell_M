@@ -192,11 +192,26 @@ def setup_fake_environment(fs):
     fs.create_dir(home_directory)
     fs.create_dir(logging_directory)
 
+    # prepare paths for history and trash dirs and files in fake filesystem
+    project_root = os.path.join(base_directory, "project_root")
+    history_dir = os.path.join(project_root, ".history")
+    trash_dir = os.path.join(project_root, ".trash")
+    history_path = os.path.join(history_dir, "history.json")
+
+    # creating history and trash files and dirs
+    fs.create_dir(project_root)
+    fs.create_dir(history_dir)
+    fs.create_dir(trash_dir)
+    fs.create_file(
+        history_path, contents='{\n  "meta": {\n    "last_reversible_id": 0\n  },\n  "records": []\n}')
+
     # replacing constants values
     constants.USER_HOME_DIR = home_directory
     constants.CURRENT_DIR = current_directory
     constants.LOG_DIR = logging_directory
     constants.USER_LOGIN = "fake_user"
+    constants.HISTORY_PATH = history_path
+    constants.TRASH_DIR = trash_dir
 
     # creating basic testing folders and files
     fs.create_dir(f"{current_directory}/folder1")

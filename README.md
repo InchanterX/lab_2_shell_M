@@ -5,6 +5,7 @@ It's a Shell level M project with a terminal that dynamically load all given com
  <pre>
     .
     ├── lab_2_shell_m
+    │   ├── .trash                             # Store deleted files
     │   ├── .shell_log                         # Source code
     │       ├── shell.log                      # log file
     │   ├── src/                               # Source code
@@ -21,7 +22,7 @@ It's a Shell level M project with a terminal that dynamically load all given com
     │                ├── basic_mv.py           # moves files
     │                ├── basic_rm.py           # deletes files
     │                ├── grep.py               # searches matches
-    │                ├── history.py            # saves and lists user actions
+    │                ├── history.py            # lists user actions
     │                ├── tar.py                # converts files to a .tar files
     │                ├── undo.py               # reverses users actions
     │                ├── untar.py              # untars .tar files
@@ -38,6 +39,8 @@ It's a Shell level M project with a terminal that dynamically load all given com
     │            ├── constants.py              # contains constants and regular expressions
     │            ├── registry.py               # registers commands
     │            ├── tokenizer.py              # converts commands into tokens
+    │            ├── history_manager.py        # save history of used commands to .history
+    │            ├── trash_manager.py          # make backups of commands that can be undone
     │       ├── shell/                         # project building folder
     │            ├── __init__.py               #
     │            ├── shell.py                  # gather all classes in one for a simpler usage
@@ -52,6 +55,8 @@ It's a Shell level M project with a terminal that dynamically load all given com
     │       ├── test_basic_cat.py              # Test command cat
     │   ├── .gitignore                         # git ignore files
     │   ├── .pre-commit-config.yaml            # Code-style check
+    │   ├── .history/                          # History folder
+    │       ├── history.json                   # JSON file with commands history
     │   ├── pyproject.toml                     # Project configuration
     │   ├── requirements.txt                   # Dependencies
     │   ├── README.md                          # Laboratory report with a project description
@@ -83,6 +88,12 @@ Tokenizer process result of master's regular expression and put them to a list. 
 
 ## Applicator
 Applicator normalize commands flags, prepare class and function for command call by finding them in registry. Returns command work result.
+
+## History Manager
+Get tokens, create history elements and add them to the file .history/history.json in the project root. Command distinguish which commands can be undone or not.
+
+## Trash manager
+Make backups of files that will be changed by cp/mv/rm commands work in folder .trash. Also provide an ability to restore files from trash back.
 
 ## Shell
 Shell file serves the purpose of building a solid file to easily call input command processing. Make a consistent calls of infrastructure classes.
@@ -125,10 +136,13 @@ Command removes given files. Files can always be easily removed. Folders can be 
 These 2 pairs of commands are used to work with archives. You can gather files to 2 types of archives using zip and tar. And unzip them by unzip and untar. New archives appears in the current folder with a name "archive$.\[zip|tar.gz]" where $ is a number that prevents files collisions.
 
 ## Grep
+Search by regular expression from the command parameter in the given parameters. Returns list of all matches in every file with line number. Supports flag -r and -i. -r allow user to search in folders. -i allow user to ignore letters cases.
 
 ## History
+Returns last N elements of .history/history.json file depending on the entered parameter. Returns 10 elements  by default. If N exceeds current history len it will be rounded to the length of the history.
 
 ## Undo
+Using functions of history manager and trash manager to find the command that should be undone in .history/history.json and if there is no errors restores it from .trash.
 
 # Users commands
 Users of the console can do their own commands and easily add them to the other commands using services and basic structure.
