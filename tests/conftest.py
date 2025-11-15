@@ -10,6 +10,40 @@ import src.infrastructure.constants as constants
 pytest_plugins = ["pyfakefs"]
 
 
+def _create_project_dir_in_fakefs(fake_fs):
+    '''
+    Create project dir in fake filesystem
+    '''
+    real_project_dir = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), ".."))
+
+    try:
+        if not fake_fs.exists(real_project_dir):
+            parts = real_project_dir.split(os.sep)
+            if parts[0] == '':
+                current_path = os.sep
+                parts = parts[1:]
+            else:
+                current_path = parts[0]
+                parts = parts[1:]
+
+            for part in parts:
+                if part:
+                    current_path = os.path.join(current_path, part)
+                    if not fake_fs.exists(current_path):
+                        fake_fs.create_dir(current_path)
+    except Exception:
+        pass
+
+
+@pytest.fixture(scope="function", autouse=True)
+def setup_real_project_dir_in_fs(fs):
+    '''
+    Ensure directory existence.
+    '''
+    _create_project_dir_in_fakefs(fs)
+
+
 def _gather_command_modules():
     '''
     Dynamically prepare list of modules from REGISTRY
