@@ -23,6 +23,28 @@ class TrashManager:
         '''
         return os.path.join(constants.TRASH_DIR, str(history_id))
 
+    def _is_prohibited_path(self, path: str) -> bool:
+        '''
+        Check if path is prohibited from being backed up, preventing recursive backups
+        '''
+
+        if path == "/":
+            return True
+
+        # Windows crutch
+        if os.name == "nt":
+            normalized = os.path.normpath(path)
+            drive, rest = os.path.splitdrive(normalized)
+            if drive and (not rest or rest == "\\"):
+                return True
+
+        # check parent dir
+        abs_parent = os.path.abspath("..")
+        if path == abs_parent:
+            return True
+
+        return False
+
     def create_backup(self, history_id: int, command_name: str, parameters: list[str]) -> str | None:
         '''
         Create backup of all valid files from parameers that need to be backuped.
@@ -40,6 +62,11 @@ class TrashManager:
             for parameter in parameters:
                 original_parameter, normalized_parameter = self._normalize.normalize(
                     parameter)
+                # skip prohibited paths
+                if self._is_prohibited_path(normalized_parameter):
+                    self._logger.warning(
+                        f"Skipping backup of prohibited path: {normalized_parameter}")
+                    continue
                 if os.path.exists(normalized_parameter):
                     backup_path = os.path.join(
                         backup_dir, os.path.basename(normalized_parameter))
@@ -63,6 +90,11 @@ class TrashManager:
                 for parameter in parameters[:-1]:
                     original_parameter, normalized_parameter = self._normalize.normalize(
                         parameter)
+                    # skip prohibited paths
+                    if self._is_prohibited_path(normalized_parameter):
+                        self._logger.warning(
+                            f"Skipping backup of prohibited path: {normalized_parameter}")
+                        continue
                     if os.path.exists(normalized_parameter):
                         backup_path = os.path.join(
                             backup_dir, os.path.basename(normalized_parameter))
