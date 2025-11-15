@@ -103,3 +103,61 @@ def test_grep_nonexistent_file_error(fs, setup_fake_environment, reload_grep_mod
 
     # Comparison
     assert "grep: File nonexistent_file can't be processed. It doesn't exist." in result
+
+
+# def test_grep_invalid_expression_error(fs, setup_fake_environment, reload_grep_module):
+#     # Call
+#     shell = Shell()
+#     with pytest.raises(SyntaxError) as exception:
+#         shell.shell("grep '[' file42")
+
+#     # Comparison
+#     assert "Pattern" in str(
+#         exception.value) and "can't be processed" in str(exception.value)
+
+
+# def test_grep_permission_denied_file_error(fs, setup_fake_environment, reload_grep_module):
+#     # Call
+#     shell = Shell()
+#     result = shell.shell("grep Test restricted_file.txt")
+
+#     # Comparison
+#     assert "grep: cannot search in restricted_file.txt. Permission denied." in result
+
+
+# def test_grep_permission_denied_directory_error(fs, setup_fake_environment, reload_grep_module):
+#     # Call
+#     shell = Shell()
+#     result = shell.shell("grep -r Test restricted_folder")
+
+#     # Comparison
+#     assert "grep: cannot search in restricted_folder. Permission denied." in result
+
+
+def test_grep_multiple_matches_in_line(fs, setup_fake_environment, reload_grep_module):
+    # Prepare
+    fs.create_file(
+        "/home/fake_user/multi_match.txt",
+        contents="test test test\nother line\n")
+
+    # Call
+    shell = Shell()
+    result = shell.shell("grep test multi_match.txt")
+
+    # Comparison
+    lines = result.split("\n")
+    assert len(
+        [element for element in lines if "multi_match.txt 1" in element]) >= 1
+
+
+def test_grep_empty_result(fs, setup_fake_environment, reload_grep_module):
+    # Prepare
+    fs.create_file(
+        "/home/fake_user/empty_file.txt")
+
+    # Call
+    shell = Shell()
+    result = shell.shell("grep NonexistentPattern file42")
+
+    # Comparison
+    assert result == ""

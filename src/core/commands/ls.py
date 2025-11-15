@@ -52,10 +52,16 @@ class Ls:
                             f"ls: {original_parameter} can't be listed. It's a file!")
                     # if directory is given, append row list of files in it
                     elif os.path.isdir(parameter):
-                        results.append(os.listdir(parameter))
-                        dirs.append(parameter)
-                        self._logger.debug(
-                            f"Listed directory {parameter}")
+                        try:
+                            results.append(os.listdir(parameter))
+                            dirs.append(parameter)
+                            self._logger.debug(
+                                f"Listed directory {parameter}")
+                        except PermissionError:
+                            self._logger.exception(
+                                f"Unable to process directory {parameter}. PermissionError.")
+                            output.append(
+                                f"ls: cannot list {original_parameter}. Permission denied.")
                     # otherwise append a error to the output, b/c path is invalid
                     else:
                         self._logger.error(

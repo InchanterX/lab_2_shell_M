@@ -43,8 +43,8 @@ class Grep:
         Find all the matches in lines of given file
         and return them in numerated list of strings.
         '''
+        output = []
         try:
-            output = []
             with open(path, "r", encoding="UTF-8", errors="ignore") as file:
                 for order, line in enumerate(file):
                     for match in regular_expression.finditer(line):
@@ -58,27 +58,34 @@ class Grep:
         return output
 
     def _process_directory(self, path: str, original_path: str, regular_expression: re.Pattern[str]) -> list[str]:
-        files = os.listdir(path)
         output = []
-        for file in files:
-            try:
-                nested_path = os.path.join(path, file)
-                nested_original_path = os.path.join(original_path, file)
-                if not os.path.exists(nested_path):
-                    self._logger.error(f"File {nested_path} doesn't exists.")
+        try:
+            files = os.listdir(path)
+            for file in files:
+                try:
+                    nested_path = os.path.join(path, file)
+                    nested_original_path = os.path.join(original_path, file)
+                    if not os.path.exists(nested_path):
+                        self._logger.error(
+                            f"File {nested_path} doesn't exists.")
+                        output.append(
+                            f"grep: File {nested_original_path} can't be processed. It doesn't exist.")
+                    elif os.path.isfile(nested_path):
+                        output += (self._process_file(nested_path,
+                                                      nested_original_path, regular_expression))
+                    else:
+                        output += (self._process_directory(nested_path,
+                                                           nested_original_path, regular_expression))
+                except PermissionError:
+                    self._logger.exception(
+                        f"There is no permissions to {nested_path}.")
                     output.append(
-                        f"grep: File {nested_original_path} can't be processed. It doesn't exist.")
-                elif os.path.isfile(nested_path):
-                    output += (self._process_file(nested_path,
-                                                  nested_original_path, regular_expression))
-                else:
-                    output += (self._process_directory(nested_path,
-                                                       nested_original_path, regular_expression))
-            except PermissionError:
-                self._logger.exception(
-                    f"There is no permissions to {path}.")
-                output.append(
-                    f"grep: cannot search in {original_path}. Permission denied.")
+                        f"grep: cannot search in {nested_original_path}. Permission denied.")
+        except PermissionError:
+            self._logger.exception(
+                f"There is no permissions to {path}.")
+            output.append(
+                f"grep: cannot search in {original_path}. Permission denied.")
         return output
 
     def grep(self, long_flags: list[str], parameters: list[str]) -> str:
@@ -116,29 +123,41 @@ class Grep:
             original_path, path = self._normalize.normalize(
                 path)
             try:
-                # if given path is invalid
-                if not os.path.exists(path):
+                # determine file type
+                try:
+                    is_file = os.path.isfile(path)
+                    is_dir = os.path.isdir(path)
+                except PermissionError:
+                    self._logger.exception(
+                        f"There is no permissions to access {path}.")
+                    output.append(
+                        f"grep: cannot find matchs in {original_path}. Permission denied.")
+                    continue
+
+                # check if path exists
+                if not (is_file or is_dir):
                     self._logger.error(f"File {path} doesn't exists.")
                     output.append(
                         f"grep: File {original_path} can't be processed. It doesn't exist.")
-                # process files with given regular expression
-                elif os.path.isfile(path):
+                # try to process as file
+                elif is_file:
                     output += (self._process_file(path,
                                                   original_path, regular_expression))
-                elif recursive:
-                    output += (self._process_directory(path,
-                                                       original_path, regular_expression))
-                else:
-                    self._logger.error(
-                        f"Folder {path} can't be processed without recursive flag.")
-                    output.append(
-                        f"grep: folder {original_path} can't be processed without --recursive flag.")
-            # if program failed to process file it is unaccessible
+                # try to process as directory
+                elif is_dir:
+                    if recursive:
+                        output += (self._process_directory(path,
+                                                           original_path, regular_expression))
+                    else:
+                        self._logger.error(
+                            f"Folder {path} can't be processed without recursive flag.")
+                        output.append(
+                            f"grep: folder {original_path} can't be processed without --recursive flag.")
             except PermissionError:
                 self._logger.exception(
-                    f"There is no permissions to {path}.")
+                    f"Cannot access {path}. Permission denied.")
                 output.append(
-                    f"grep: cannot search in {original_path}. Permission denied.")
+                    f"grep: cannot find matches in {original_path}. Permission denied.")
         return "\n".join(output)
 
 

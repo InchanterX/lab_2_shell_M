@@ -70,8 +70,15 @@ class Rm:
 
                 # check if folder is empty
                 folder_is_empty = False
-                if not os.listdir(parameter):
-                    folder_is_empty = True
+                try:
+                    if not os.listdir(parameter):
+                        folder_is_empty = True
+                except PermissionError:
+                    self._logger.exception(
+                        f"Unable to access directory {parameter}. PermissionError.")
+                    output.append(
+                        f"rm: cannot delete {original_parameter}. PermissionError.")
+                    continue
 
                 # ask for a consent to delete a folder
                 consent = 0
