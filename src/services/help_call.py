@@ -1,5 +1,5 @@
 import src.infrastructure.constants as constants
-import logging
+from src.infrastructure.logger import logger
 
 
 class Helper:
@@ -8,7 +8,7 @@ class Helper:
     '''
 
     def __init__(self) -> None:
-        self._logger = logging.getLogger(__name__)
+        self._logger = logger
 
     def call_help(self, command: str) -> str:
         # It is better to add check for given name existence

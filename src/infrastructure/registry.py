@@ -2,7 +2,7 @@ import importlib.util
 from pathlib import Path
 from typing import Any
 import importlib
-import logging
+from src.infrastructure.logger import logger
 
 
 class Registry:
@@ -15,7 +15,7 @@ class Registry:
     def __init__(self, basic_directory: str = "src/core") -> None:
         self.basic_directory = Path(basic_directory)
         self.commands: dict[str, dict[str, Any]] = {}
-        self._logger = logging.getLogger(__name__)
+        self._logger = logger
 
     def registration(self) -> tuple[bool, dict[str, dict[str, Any]]]:
 

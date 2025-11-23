@@ -1,5 +1,5 @@
 import src.infrastructure.constants as constants
-import logging
+from src.infrastructure.logger import logger
 import os
 
 
@@ -11,9 +11,9 @@ class Normalizer:
     '''
 
     def __init__(self) -> None:
-        self._logger = logging.getLogger(__name__)
+        self._logger = logger
 
-    def normalize(self, path: str) -> list[str]:
+    def normalize(self, path: str) -> tuple[str, str]:
         original_path = path
 
         # exclude extra ' and "

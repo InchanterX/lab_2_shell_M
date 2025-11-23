@@ -1,6 +1,6 @@
 import os
 import shutil
-import logging
+from src.infrastructure.logger import logger
 import src.infrastructure.constants as constants
 from src.services.path_normalizer import Normalizer
 
@@ -13,7 +13,7 @@ class TrashManager:
 
     def __init__(self) -> None:
         self._normalize = Normalizer()
-        self._logger = logging.getLogger(__name__)
+        self._logger = logger
         if not os.path.exists(constants.TRASH_DIR):
             os.makedirs(constants.TRASH_DIR, exist_ok=True)
 

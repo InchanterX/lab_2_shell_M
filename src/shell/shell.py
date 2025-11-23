@@ -2,7 +2,7 @@ from src.infrastructure.tokenizer import Tokenizer
 from src.infrastructure.applicator import Applicator
 from src.infrastructure.history_manager import HistoryManager
 from src.infrastructure.trash_manager import TrashManager
-import logging
+from src.infrastructure.logger import logger
 
 
 class Shell:
@@ -13,7 +13,7 @@ class Shell:
     def __init__(self):
         self._history = HistoryManager()
         self._trash = TrashManager()
-        self._logger = logging.getLogger(__name__)
+        self._logger = logger
 
     def shell(self, command: str) -> str:
         tokens = Tokenizer().tokenize(command)

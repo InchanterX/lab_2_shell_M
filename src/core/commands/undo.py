@@ -1,4 +1,4 @@
-import logging
+from src.infrastructure.logger import logger
 from src.services.help_call import Helper
 from src.infrastructure.history_manager import HistoryManager
 from src.infrastructure.trash_manager import TrashManager
@@ -13,7 +13,7 @@ class Undo:
         self._helper = helper
         self._history_manager = history_manager
         self._trash_manager = trash_manager
-        self._logger = logging.getLogger(__name__)
+        self._logger = logger
 
     def undo(self, long_flags: list[str], parameters: list[str]) -> str:
         self._logger.debug(

@@ -1,6 +1,6 @@
 import os
 import shutil
-import logging
+from src.infrastructure.logger import logger
 from src.services.path_normalizer import Normalizer
 from src.services.help_call import Helper
 
@@ -15,7 +15,7 @@ class Cp:
     def __init__(self, normalizer: Normalizer, helper: Helper) -> None:
         self._normalize = normalizer
         self._helper = helper
-        self._logger = logging.getLogger(__name__)
+        self._logger = logger
 
     def cp(self, long_flags: list[str], parameters: list[str]) -> str:
         self._logger.debug(

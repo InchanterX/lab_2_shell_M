@@ -1,15 +1,15 @@
 import src.infrastructure.constants as constants
 from src.shell.shell import Shell
-import logging
 import logging.config
 from src.common.config import LOGGING_CONFIG
+from src.infrastructure.logger import logger
 
 
 def main() -> None:
 
     # define logger in accordance with config file
     logging.config.dictConfig(LOGGING_CONFIG)
-    logger = logging.getLogger(__name__)
+    # logger = logging.getLogger(__name__)
     logger.info("Logging initialized.")
     print("Console is loading...")
 

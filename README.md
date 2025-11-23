@@ -180,8 +180,8 @@ class Pwd:
 ```
 4. Add services that you would like to use in your code:
 ```python
-import logging
 import src.infrastructure.constants as constants # you can easily access basic vars through constants
+from src.infrastructure.logger import logger # logger call
 from src.services.help_call import Helper # all services are stored in src.services
 
 
@@ -192,7 +192,7 @@ class Pwd:
 
     def __init__(self, helper: Helper) -> None: # add services you want
         self._helper = helper # and add them here
-        self._logger = logging.getLogger(__name__)
+        self._logger = logger
 
     def pwd(self, long_flags: list[str], parameters: list[str]) -> str: # input is basic for all the commands
         ...
@@ -200,7 +200,7 @@ class Pwd:
 
 1. And now you can create whatever you want! After finishing all you need to do is to save your file and on the next launch of the console it will appear. Here is the example of ready pwd command.
 ```python
-import logging
+from src.infrastructure.logger import logger
 import src.infrastructure.constants as constants
 from src.services.help_call import Helper
 
@@ -212,7 +212,7 @@ class Pwd:
 
     def __init__(self, helper: Helper) -> None:
         self._helper = helper
-        self._logger = logging.getLogger(__name__)
+        self._logger = logger
 
     def pwd(self, long_flags: list[str], parameters: list[str]) -> str:
         self._logger.debug(

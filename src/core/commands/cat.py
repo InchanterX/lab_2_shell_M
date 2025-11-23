@@ -1,5 +1,5 @@
 import os
-import logging
+from src.infrastructure.logger import logger
 from src.services.help_call import Helper
 from src.services.path_normalizer import Normalizer
 
@@ -14,7 +14,7 @@ class Cat:
     def __init__(self, normalizer: Normalizer, helper: Helper) -> None:
         self._normalize = normalizer
         self._helper = helper
-        self._logger = logging.getLogger(__name__)
+        self._logger = logger
 
     def cat(self, long_flags: list[str], parameters: list[str]) -> str:
         self._logger.debug(

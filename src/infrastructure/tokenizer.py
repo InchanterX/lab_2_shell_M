@@ -1,7 +1,7 @@
 import src.infrastructure.constants as constants
 from typing import Any
 from dataclasses import dataclass
-import logging
+from src.infrastructure.logger import logger
 
 
 @dataclass
@@ -24,7 +24,7 @@ class Tokenizer:
     '''
 
     def __init__(self) -> None:
-        self._logger = logging.getLogger(__name__)
+        self._logger = logger
 
     def tokenize(self, command: str) -> list[Command_Token]:
         tokens: list[Command_Token] = []

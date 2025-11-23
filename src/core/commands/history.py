@@ -1,4 +1,4 @@
-import logging
+from src.infrastructure.logger import logger
 from src.services.help_call import Helper
 from src.infrastructure.history_manager import HistoryManager
 
@@ -11,7 +11,7 @@ class History:
     def __init__(self, helper: Helper, history_manager: HistoryManager) -> None:
         self._helper = helper
         self._history_manager = history_manager
-        self._logger = logging.getLogger(__name__)
+        self._logger = logger
 
     def history(self, long_flags: list[str], parameters: list[str]) -> str:
         self._logger.debug(
