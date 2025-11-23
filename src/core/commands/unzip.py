@@ -3,6 +3,8 @@ import zipfile
 from src.infrastructure.logger import logger
 from src.services.help_call import Helper
 from src.services.path_normalizer import Normalizer
+from src.services.parameter_validator import ParameterValidator
+from src.services.command_logger import CommandLogger
 
 
 class Unzip:
@@ -10,23 +12,22 @@ class Unzip:
     "Unzip" unzips zip archives.
     '''
 
-    def __init__(self, normalizer: Normalizer, helper: Helper) -> None:
+    def __init__(self, normalizer: Normalizer, helper: Helper, validator: ParameterValidator, command_logger: CommandLogger) -> None:
         self._normalize = normalizer
         self._helper = helper
+        self._validator = validator
+        self._command_logger = command_logger
         self._logger = logger
 
     def unzip(self, long_flags: list[str], parameters: list[str]) -> str:
-        self._logger.debug(
-            f"Running unzip with flags={long_flags}, parameters={parameters}")
+        self._command_logger.log_command_call("unzip", long_flags, parameters)
 
         # help call
         if 'help' in long_flags:
             return self._helper.call_help("unzip")
 
-        # no parameters were given
-        if parameters == []:
-            self._logger.error("No parameters were given.")
-            raise SyntaxError("unzip: No parameters were given.")
+        # validate parameters
+        self._validator.validate_no_parameters(parameters, "unzip")
 
         # processing parameters
         output = []
@@ -62,7 +63,7 @@ class Unzip:
 
 COMMAND_INFO = {
     "name": "unzip",
-    "function": lambda: Unzip(Normalizer(), Helper()),
+    "function": lambda: Unzip(Normalizer(), Helper(), ParameterValidator(), CommandLogger()),
     "entry-point": "unzip",
     "flags": ["help"],
     "aliases": {},

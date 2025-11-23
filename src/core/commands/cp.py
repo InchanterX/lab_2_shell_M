@@ -3,6 +3,8 @@ import shutil
 from src.infrastructure.logger import logger
 from src.services.path_normalizer import Normalizer
 from src.services.help_call import Helper
+from src.services.parameter_validator import ParameterValidator
+from src.services.command_logger import CommandLogger
 
 
 class Cp:
@@ -12,28 +14,23 @@ class Cp:
     Otherwise it returns an exception.
     '''
 
-    def __init__(self, normalizer: Normalizer, helper: Helper) -> None:
+    def __init__(self, normalizer: Normalizer, helper: Helper, validator: ParameterValidator, command_logger: CommandLogger) -> None:
         self._normalize = normalizer
         self._helper = helper
+        self._validator = validator
+        self._command_logger = command_logger
         self._logger = logger
 
     def cp(self, long_flags: list[str], parameters: list[str]) -> str:
-        self._logger.debug(
-            f"Running cp with flags={long_flags}, parameters={parameters}")
+        self._command_logger.log_command_call("cp", long_flags, parameters)
 
         # help call
         if 'help' in long_flags:
             return self._helper.call_help("cp")
 
-        # no parameters were given
-        if parameters == []:
-            self._logger.error("No parameters were given.")
-            raise SyntaxError("cp: No parameters were given.")
-
-        # not enough parameters were given
-        if len(parameters) == 1:
-            self._logger.error("Not enough parameters were given.")
-            raise SyntaxError("cp: Not enough parameters were given.")
+        # validate parameters
+        self._validator.validate_no_parameters(parameters, "cp")
+        self._validator.validate_not_enough_parameters(parameters, 2, "cp")
 
         # processing flags
         recursive = 'recursive' in long_flags
@@ -102,7 +99,7 @@ class Cp:
 
 COMMAND_INFO = {
     "name": "cp",
-    "function": lambda: Cp(Normalizer(), Helper()),
+    "function": lambda: Cp(Normalizer(), Helper(), ParameterValidator(), CommandLogger()),
     "entry-point": "cp",
     "flags": ["recursive", "help"],
     "aliases": {"r": "recursive"},

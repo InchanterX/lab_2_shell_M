@@ -1,5 +1,7 @@
 from src.services.help_call import Helper
 from src.services.path_normalizer import Normalizer
+from src.services.parameter_validator import ParameterValidator
+from src.services.command_logger import CommandLogger
 import src.infrastructure.constants as constants
 from src.infrastructure.logger import logger
 import re
@@ -14,9 +16,11 @@ class Grep:
     Supports flag -r for recursive search and -i for registry independent search.
     '''
 
-    def __init__(self, normalizer: Normalizer, helper: Helper) -> None:
+    def __init__(self, normalizer: Normalizer, helper: Helper, validator: ParameterValidator, command_logger: CommandLogger) -> None:
         self._normalize = normalizer
         self._helper = helper
+        self._validator = validator
+        self._command_logger = command_logger
         self._logger = logger
 
     def _process_regular_expression(self, regular_expression: str, ignore_case: bool) -> re.Pattern[str]:
@@ -89,17 +93,14 @@ class Grep:
         return output
 
     def grep(self, long_flags: list[str], parameters: list[str]) -> str:
-        self._logger.debug(
-            f"Running grep with flags={long_flags}, parameters={parameters}")
+        self._command_logger.log_command_call("grep", long_flags, parameters)
 
         # return help if such flag is given
         if 'help' in long_flags:
             return self._helper.call_help("grep")
 
-        # no parameters were given
-        if len(parameters) == 0:
-            self._logger.error("No parameters were given.")
-            raise SyntaxError("grep: No parameters were given.")
+        # validate parameters
+        self._validator.validate_no_parameters(parameters, "grep")
 
         if len(parameters) == 1:
             parameters.append(constants.CURRENT_DIR)
@@ -163,7 +164,7 @@ class Grep:
 
 COMMAND_INFO = {
     "name": "grep",
-    "function": lambda: Grep(Normalizer(), Helper()),
+    "function": lambda: Grep(Normalizer(), Helper(), ParameterValidator(), CommandLogger()),
     "entry-point": "grep",
     "flags": ["recursive", "ignore_case", "help"],
     "aliases": {"r": "recursive", "i": "ignore_case"},

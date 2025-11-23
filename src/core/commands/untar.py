@@ -3,6 +3,8 @@ import tarfile
 from src.infrastructure.logger import logger
 from src.services.help_call import Helper
 from src.services.path_normalizer import Normalizer
+from src.services.parameter_validator import ParameterValidator
+from src.services.command_logger import CommandLogger
 
 
 class Untar:
@@ -10,23 +12,22 @@ class Untar:
     "Untar" tar.gz archives.
     '''
 
-    def __init__(self, normalizer: Normalizer, helper: Helper) -> None:
+    def __init__(self, normalizer: Normalizer, helper: Helper, validator: ParameterValidator, command_logger: CommandLogger) -> None:
         self._normalize = normalizer
         self._helper = helper
+        self._validator = validator
+        self._command_logger = command_logger
         self._logger = logger
 
     def untar(self, long_flags: list[str], parameters: list[str]) -> str:
-        self._logger.debug(
-            f"Running untar with flags={long_flags}, parameters={parameters}")
+        self._command_logger.log_command_call("untar", long_flags, parameters)
 
         # help call
         if 'help' in long_flags:
             return self._helper.call_help("untar")
 
-        # no parameters were given
-        if parameters == []:
-            self._logger.error("No parameters were given.")
-            raise SyntaxError("untar: No parameters were given.")
+        # validate parameters
+        self._validator.validate_no_parameters(parameters, "untar")
 
         # processing parameters
         output = []
@@ -62,7 +63,7 @@ class Untar:
 
 COMMAND_INFO = {
     "name": "untar",
-    "function": lambda: Untar(Normalizer(), Helper()),
+    "function": lambda: Untar(Normalizer(), Helper(), ParameterValidator(), CommandLogger()),
     "entry-point": "untar",
     "flags": ["help"],
     "aliases": {},

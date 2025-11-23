@@ -3,6 +3,8 @@ import shutil
 from src.infrastructure.logger import logger
 from src.services.path_normalizer import Normalizer
 from src.services.help_call import Helper
+from src.services.parameter_validator import ParameterValidator
+from src.services.command_logger import CommandLogger
 
 
 class Rm:
@@ -13,23 +15,22 @@ class Rm:
     If several parameters are given without --force will ask user's consent.
     '''
 
-    def __init__(self, normalizer: Normalizer, helper: Helper) -> None:
+    def __init__(self, normalizer: Normalizer, helper: Helper, validator: ParameterValidator, command_logger: CommandLogger) -> None:
         self._normalize = normalizer
         self._helper = helper
+        self._validator = validator
+        self._command_logger = command_logger
         self._logger = logger
 
     def rm(self, long_flags: list[str], parameters: list[str]) -> str:
-        self._logger.debug(
-            f"Running rm with flags={long_flags}, parameters={parameters}")
+        self._command_logger.log_command_call("rm", long_flags, parameters)
 
         # help call
         if 'help' in long_flags:
             return self._helper.call_help("rm")
 
-        # no parameters were given
-        if parameters == []:
-            self._logger.error("No parameters were given.")
-            raise SyntaxError("rm: No parameters were given.")
+        # validate parameters
+        self._validator.validate_no_parameters(parameters, "rm")
 
         # processing flags
         force = False
@@ -129,7 +130,7 @@ class Rm:
 
 COMMAND_INFO = {
     "name": "rm",
-    "function": lambda: Rm(Normalizer(), Helper()),
+    "function": lambda: Rm(Normalizer(), Helper(), ParameterValidator(), CommandLogger()),
     "entry-point": "rm",
     "flags": ["recursive", "force", "help"],
     "aliases": {"r": "recursive", "f": "force"},

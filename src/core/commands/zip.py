@@ -4,6 +4,8 @@ from src.infrastructure.logger import logger
 import src.infrastructure.constants as constants
 from src.services.help_call import Helper
 from src.services.path_normalizer import Normalizer
+from src.services.parameter_validator import ParameterValidator
+from src.services.command_logger import CommandLogger
 
 
 class Zip:
@@ -11,24 +13,22 @@ class Zip:
     "Zip" files and folders to a zip archive.
     """
 
-    def __init__(self, normalizer: Normalizer, helper: Helper) -> None:
+    def __init__(self, normalizer: Normalizer, helper: Helper, validator: ParameterValidator, command_logger: CommandLogger) -> None:
         self._normalize = normalizer
         self._helper = helper
+        self._validator = validator
+        self._command_logger = command_logger
         self._logger = logger
 
     def zip(self, long_flags: list[str], parameters: list[str]) -> str:
-        self._logger.debug(
-            f"Running zip with flags={long_flags}, parameters={parameters}"
-        )
+        self._command_logger.log_command_call("zip", long_flags, parameters)
 
         # help call
         if "help" in long_flags:
             return self._helper.call_help("zip")
 
-        # no parameters were given
-        if parameters == []:
-            self._logger.error("No parameters were given.")
-            raise SyntaxError("zip: No parameters were given.")
+        # validate parameters
+        self._validator.validate_no_parameters(parameters, "zip")
 
         # finding the best name for the archive
         archive_path = os.path.join(constants.CURRENT_DIR, "archive.zip")
@@ -82,7 +82,7 @@ class Zip:
 
 COMMAND_INFO = {
     "name": "zip",
-    "function": lambda: Zip(Normalizer(), Helper()),
+    "function": lambda: Zip(Normalizer(), Helper(), ParameterValidator(), CommandLogger()),
     "entry-point": "zip",
     "flags": ["help"],
     "aliases": {},

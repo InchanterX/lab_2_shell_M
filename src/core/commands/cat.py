@@ -2,6 +2,8 @@ import os
 from src.infrastructure.logger import logger
 from src.services.help_call import Helper
 from src.services.path_normalizer import Normalizer
+from src.services.parameter_validator import ParameterValidator
+from src.services.command_logger import CommandLogger
 
 
 class Cat:
@@ -11,23 +13,22 @@ class Cat:
     Otherwise it returns corresponding error.
     '''
 
-    def __init__(self, normalizer: Normalizer, helper: Helper) -> None:
+    def __init__(self, normalizer: Normalizer, helper: Helper, validator: ParameterValidator, command_logger: CommandLogger) -> None:
         self._normalize = normalizer
         self._helper = helper
+        self._validator = validator
+        self._command_logger = command_logger
         self._logger = logger
 
     def cat(self, long_flags: list[str], parameters: list[str]) -> str:
-        self._logger.debug(
-            f"Running cat with flags={long_flags}, parameters={parameters}")
+        self._command_logger.log_command_call("cat", long_flags, parameters)
 
         # help call
         if 'help' in long_flags:
             return self._helper.call_help("cat")
 
-        # no parameters were given
-        if parameters == []:
-            self._logger.error("No parameters were given.")
-            raise SyntaxError("cat: No parameters were given.")
+        # validate parameters
+        self._validator.validate_no_parameters(parameters, "cat")
 
         # processing all given parameters
         output = []
@@ -77,7 +78,7 @@ class Cat:
 
 COMMAND_INFO = {
     "name": "cat",
-    "function": lambda: Cat(Normalizer(), Helper()),
+    "function": lambda: Cat(Normalizer(), Helper(), ParameterValidator(), CommandLogger()),
     "entry-point": "cat",
     "flags": ["help"],
     "aliases": {},

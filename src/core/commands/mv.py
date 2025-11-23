@@ -3,6 +3,8 @@ import shutil
 from src.infrastructure.logger import logger
 from src.services.path_normalizer import Normalizer
 from src.services.help_call import Helper
+from src.services.parameter_validator import ParameterValidator
+from src.services.command_logger import CommandLogger
 
 
 class Mv:
@@ -12,28 +14,23 @@ class Mv:
     If more files were given and everything is valid they will be moved to a given folder.
     '''
 
-    def __init__(self, normalizer: Normalizer, helper: Helper) -> None:
+    def __init__(self, normalizer: Normalizer, helper: Helper, validator: ParameterValidator, command_logger: CommandLogger) -> None:
         self._normalize = normalizer
         self._helper = helper
+        self._validator = validator
+        self._command_logger = command_logger
         self._logger = logger
 
     def mv(self, long_flags: list[str], parameters: list[str]) -> str:
-        self._logger.debug(
-            f"Running mv with flags={long_flags}, parameters={parameters}")
+        self._command_logger.log_command_call("mv", long_flags, parameters)
 
         # help call
         if 'help' in long_flags:
             return self._helper.call_help("mv")
 
-        # no parameters were given
-        if parameters == []:
-            self._logger.error("No parameters were given.")
-            raise SyntaxError("mv: No parameters were given.")
-
-        # not enough parameters were given
-        if len(parameters) == 1:
-            self._logger.error("Not enough parameters were given.")
-            raise SyntaxError("mv: Not enough parameters were given.")
+        # validate parameters
+        self._validator.validate_no_parameters(parameters, "mv")
+        self._validator.validate_not_enough_parameters(parameters, 2, "mv")
 
         # rename mode
         original_folder_path, folder_path = self._normalize.normalize(
@@ -91,7 +88,7 @@ class Mv:
 
 COMMAND_INFO = {
     "name": "mv",
-    "function": lambda: Mv(Normalizer(), Helper()),
+    "function": lambda: Mv(Normalizer(), Helper(), ParameterValidator(), CommandLogger()),
     "entry-point": "mv",
     "flags": ["help"],
     "aliases": {},

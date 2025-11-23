@@ -1,5 +1,6 @@
 from src.infrastructure.logger import logger
 from src.services.help_call import Helper
+from src.services.command_logger import CommandLogger
 from src.infrastructure.history_manager import HistoryManager
 
 
@@ -8,14 +9,15 @@ class History:
     "History returns last N elements of .history/history.json. Returns 10 by default."
     '''
 
-    def __init__(self, helper: Helper, history_manager: HistoryManager) -> None:
+    def __init__(self, helper: Helper, history_manager: HistoryManager, command_logger: CommandLogger) -> None:
         self._helper = helper
         self._history_manager = history_manager
+        self._command_logger = command_logger
         self._logger = logger
 
     def history(self, long_flags: list[str], parameters: list[str]) -> str:
-        self._logger.debug(
-            f"Running history with flags={long_flags}, parameters={parameters}")
+        self._command_logger.log_command_call(
+            "history", long_flags, parameters)
 
         # help call
         if 'help' in long_flags:
@@ -61,7 +63,7 @@ class History:
 
 COMMAND_INFO = {
     "name": "history",
-    "function": lambda: History(Helper(), HistoryManager()),
+    "function": lambda: History(Helper(), HistoryManager(), CommandLogger()),
     "entry-point": "history",
     "flags": ["help"],
     "aliases": {},

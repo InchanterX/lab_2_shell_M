@@ -37,6 +37,7 @@ It's a Shell level M project with a terminal that dynamically load all given com
     │            ├── applicator.py             # applies command to tokens
     │            ├── colorizer.py              # prepares colors for commands colorizing
     │            ├── constants.py              # contains constants and regular expressions
+    │            ├── logger.py                 # separate file for logger initialization
     │            ├── registry.py               # registers commands
     │            ├── tokenizer.py              # converts commands into tokens
     │            ├── history_manager.py        # save history of used commands to .history
@@ -46,7 +47,9 @@ It's a Shell level M project with a terminal that dynamically load all given com
     │            ├── shell.py                  # gather all classes in one for a simpler usage
     |       ├── services/                      # common functions for usage in commands
     │            ├── __init__.py               #
+    │            ├── command_logger.py         # automates the process of commands call logging
     │            ├── help_call.py              # shows information about the command
+    │            ├── parameter_validator.py    # check if command received right quantity of commands
     │            ├── path_normalizer.py        # converts paths to a standard form
     |       ├── __init__.py                    #
     |       ├── main.py                        # It's a main file!
@@ -101,6 +104,9 @@ Make backups of files that will be changed by cp/mv/rm commands work in folder .
 ## Shell
 Shell file serves the purpose of building a solid file to easily call input command processing. Make a consistent calls of infrastructure classes.
 
+## Logger
+Make a unite logger for future usage in main and all other files
+
 ## Main
 Main file starts the terminal and returns result of Shell() work.
 
@@ -112,6 +118,14 @@ Returns informational message to the console about the asked command. Builds it'
 
 ## Path Normalizer
 Convert given path to an absolute normalized unfolded and unquoted version of it and returns original and processed path.
+
+## Command Logger
+Automatically logs used commands with their parameters and flags.
+
+## Parameter Validation
+Provides two functions to check validity of quantity of parameters given to command.
+1. Check for giving no parameters.
+2. Check for giving less parameters then required
 
 # Embedded commands
 Standard library of commands provided with console.
@@ -158,7 +172,7 @@ Fields of flags, aliases and descriptions are not mandatory and can be empty ({}
 ```python
 COMMAND_INFO = {
     "name": "pwd", # command name
-    "function": lambda: Pwd(Helper()), # factory with command class and services that are used in command
+    "function": lambda: Pwd(Helper(), CommandLogger()), # factory with command class and services that are used in command
     "entry-point": "pwd", # main function that runs the command
     "flags": ["help"], # flags that can be applied to you command
     "aliases": {"h": "help"}, # shortenings to you flags
@@ -172,7 +186,7 @@ class Pwd:
     Command "pwd" returns current directory
     '''
 
-    def __init__(self) -> None: # im
+    def __init__(self) -> None: # init
         ...
 
     def pwd(self, long_flags: list[str], parameters: list[str]) -> str: # input is basic for all the commands
@@ -183,6 +197,7 @@ class Pwd:
 import src.infrastructure.constants as constants # you can easily access basic vars through constants
 from src.infrastructure.logger import logger # logger call
 from src.services.help_call import Helper # all services are stored in src.services
+from src.services.command_logger import CommandLogger # service to log your command with one call
 
 
 class Pwd:
@@ -190,8 +205,9 @@ class Pwd:
     Command "pwd" returns current directory
     '''
 
-    def __init__(self, helper: Helper) -> None: # add services you want
+    def __init__(self, helper: Helper, command_logger: CommandLogger) -> None: # add services you want
         self._helper = helper # and add them here
+        self._command_logger = command_logger
         self._logger = logger
 
     def pwd(self, long_flags: list[str], parameters: list[str]) -> str: # input is basic for all the commands
@@ -203,6 +219,7 @@ class Pwd:
 from src.infrastructure.logger import logger
 import src.infrastructure.constants as constants
 from src.services.help_call import Helper
+from src.services.command_logger import CommandLogger
 
 
 class Pwd:
@@ -210,13 +227,13 @@ class Pwd:
     Command "pwd" returns current directory
     '''
 
-    def __init__(self, helper: Helper) -> None:
+    def __init__(self, helper: Helper, command_logger: CommandLogger) -> None:
         self._helper = helper
+        self._command_logger = command_logger
         self._logger = logger
 
     def pwd(self, long_flags: list[str], parameters: list[str]) -> str:
-        self._logger.debug(
-            f"Running pwd with flags={long_flags}, parameters={parameters}")
+        self._command_logger.log_command_call("pwd", long_flags, parameters)
 
         # help call
         if 'help' in long_flags:
@@ -227,13 +244,12 @@ class Pwd:
 
 COMMAND_INFO = {
     "name": "pwd",
-    "function": lambda: Pwd(Helper()),
+    "function": lambda: Pwd(Helper(), CommandLogger()),
     "entry-point": "pwd",
     "flags": ["help"],
     "aliases": {},
     "description": "Returns current directory."
 }
-
 ```
 
 ## Making tests for user's commands

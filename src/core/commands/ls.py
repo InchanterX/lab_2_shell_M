@@ -5,6 +5,7 @@ import src.infrastructure.constants as constants
 from src.infrastructure.logger import logger
 from src.services.path_normalizer import Normalizer
 from src.services.help_call import Helper
+from src.services.command_logger import CommandLogger
 
 
 class Ls:
@@ -15,14 +16,14 @@ class Ls:
     "Long" extend information about every file and information. "Help" return help.
     '''
 
-    def __init__(self, normalizer: Normalizer, helper: Helper) -> None:
+    def __init__(self, normalizer: Normalizer, helper: Helper, command_logger: CommandLogger) -> None:
         self._normalize = normalizer
         self._helper = helper
+        self._command_logger = command_logger
         self._logger = logger
 
     def ls(self, long_flags: list[str], parameters: list[str]) -> str:
-        self._logger.debug(
-            f"Running ls with flags={long_flags}, parameters={parameters}")
+        self._command_logger.log_command_call("ls", long_flags, parameters)
 
         # return help if such flag is given
         if 'help' in long_flags:
@@ -107,7 +108,7 @@ class Ls:
 
 COMMAND_INFO = {
     "name": "ls",
-    "function": lambda: Ls(Normalizer(), Helper()),
+    "function": lambda: Ls(Normalizer(), Helper(), CommandLogger()),
     "entry-point": "ls",
     "flags": ["all", "long", "help"],
     "aliases": {"a": "all", "l": "long"},

@@ -11,6 +11,11 @@ class Helper:
         self._logger = logger
 
     def call_help(self, command: str) -> str:
+        # Check for given name existence
+        if command not in constants.REGISTRY:
+            self._logger.error(f"Command {command} not in registry.")
+            raise ValueError(f"Command {command} not in registry.")
+
         # It is better to add check for given name existence
         name = constants.REGISTRY[command]["name"]
         # It is better to check if elements are not empty, if they are empty it's better not to add them to the output

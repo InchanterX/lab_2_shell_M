@@ -1,6 +1,7 @@
 from src.infrastructure.logger import logger
 import src.infrastructure.constants as constants
 from src.services.help_call import Helper
+from src.services.command_logger import CommandLogger
 
 
 class Pwd:
@@ -8,13 +9,13 @@ class Pwd:
     Command "pwd" returns current directory
     '''
 
-    def __init__(self, helper: Helper) -> None:
+    def __init__(self, helper: Helper, command_logger: CommandLogger) -> None:
         self._helper = helper
+        self._command_logger = command_logger
         self._logger = logger
 
     def pwd(self, long_flags: list[str], parameters: list[str]) -> str:
-        self._logger.debug(
-            f"Running pwd with flags={long_flags}, parameters={parameters}")
+        self._command_logger.log_command_call("pwd", long_flags, parameters)
 
         # help call
         if 'help' in long_flags:
@@ -25,7 +26,7 @@ class Pwd:
 
 COMMAND_INFO = {
     "name": "pwd",
-    "function": lambda: Pwd(Helper()),
+    "function": lambda: Pwd(Helper(), CommandLogger()),
     "entry-point": "pwd",
     "flags": ["help"],
     "aliases": {},

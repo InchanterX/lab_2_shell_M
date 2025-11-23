@@ -1,5 +1,6 @@
 from src.infrastructure.logger import logger
 from src.services.help_call import Helper
+from src.services.command_logger import CommandLogger
 from src.infrastructure.history_manager import HistoryManager
 from src.infrastructure.trash_manager import TrashManager
 
@@ -9,15 +10,15 @@ class Undo:
     "undo" undoes the last reversible command: rm, mv, or cp, using .history and trash managers.
     '''
 
-    def __init__(self, helper: Helper, history_manager: HistoryManager, trash_manager: TrashManager) -> None:
+    def __init__(self, helper: Helper, history_manager: HistoryManager, trash_manager: TrashManager, command_logger: CommandLogger) -> None:
         self._helper = helper
         self._history_manager = history_manager
         self._trash_manager = trash_manager
+        self._command_logger = command_logger
         self._logger = logger
 
     def undo(self, long_flags: list[str], parameters: list[str]) -> str:
-        self._logger.debug(
-            f"Running undo with flags={long_flags}, parameters={parameters}")
+        self._command_logger.log_command_call("undo", long_flags, parameters)
 
         # help call
         if 'help' in long_flags:
@@ -61,7 +62,7 @@ class Undo:
 
 COMMAND_INFO = {
     "name": "undo",
-    "function": lambda: Undo(Helper(), HistoryManager(), TrashManager()),
+    "function": lambda: Undo(Helper(), HistoryManager(), TrashManager(), CommandLogger()),
     "entry-point": "undo",
     "flags": ["help"],
     "aliases": {},
